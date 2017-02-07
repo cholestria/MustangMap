@@ -16,7 +16,7 @@ def load_states():
     State.query.delete()  # deletes rows before adding so that data is not duplicated
 
     #reads the csv and inserts the data in the table
-    csvfile = open('states_table.csv')
+    csvfile = open('csvs/states_table.csv')
     data = csv.reader(csvfile)
     next(data, None)  # skip the headers
 
@@ -33,7 +33,7 @@ def load_state_data():
     StateData.query.delete()  # deletes rows before adding so that data is not duplicated
 
     #reads the csv and inserts the data in the table
-    csvfile = open('state_data.csv')
+    csvfile = open('csvs/state_data.csv')
     data = csv.reader(csvfile)
     next(data, None)  #skip the header row
 
@@ -53,7 +53,7 @@ def load_herd_areas():
     HerdArea.query.delete()  # deletes rows before adding so that data is not duplicated
 
     #reads the csv and inserts the data in the table
-    csvfile = open('herd_names.csv')
+    csvfile = open('csvs/herd_names.csv')
     data = csv.reader(csvfile)
     next(data, None)  #skip the header row
 
