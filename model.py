@@ -27,10 +27,10 @@ class StateData(db.Model):
     state_id = db.Column(db.String(3),
         db.ForeignKey('states.state_id'),
         nullable=False)
-    horse_adoptions = db.Column(db.Integer, nullable=True)
-    burro_adoptions = db.Column(db.Integer, nullable=True)
-    horse_removals = db.Column(db.Integer, nullable=True)
-    burro_removals = db.Column(db.Integer, nullable=True)
+    horse_adoptions = db.Column(db.Integer, nullable=True, default=None)
+    burro_adoptions = db.Column(db.Integer, nullable=True, default=None)
+    horse_removals = db.Column(db.Integer, nullable=True, default=None)
+    burro_removals = db.Column(db.Integer, nullable=True, default=None)
     __table_args__ = (db.PrimaryKeyConstraint('year', 'state_id'),
         )
 

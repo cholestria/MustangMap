@@ -13,7 +13,7 @@ import csv
 def load_states():
     """Load state info from sates.csv"""
 
-    State.query.delete()  # deletes rows before adding so that data is not duplicated
+    # State.query.delete()  # deletes rows before adding so that data is not duplicated
 
     #reads the csv and inserts the data in the table
     csvfile = open('csvs/states_table.csv')
@@ -30,38 +30,40 @@ def load_states():
 def load_state_data():
     """Load state data from state_data.csv"""
 
-    StateData.query.delete()  # deletes rows before adding so that data is not duplicated
+    # StateData.query.delete()  # deletes rows before adding so that data is not duplicated
 
     #reads the csv and inserts the data in the table
     csvfile = open('csvs/state_data.csv')
     data = csv.reader(csvfile)
     next(data, None)  #skip the header row
 
-    for each in data:
-        state_data = StateData(year=each[0],
-                                state_id=each[1],
-                                horse_adoptions=each[2],
-                                burro_adoptions=each[3],
-                                horse_removals=each[4],
-                                burro_removals=each[5],)
+    for row in data:
+        row = [element if len(element) > 0 else None for element in row]
+        state_data = StateData(year=row[0],
+                                state_id=row[1],
+                                horse_adoptions=row[2],
+                                burro_adoptions=row[3],
+                                horse_removals=row[4],
+                                burro_removals=row[5],)
         db.session.add(state_data)
     db.session.commit()
 
 def load_herd_areas():
     """Load herd area info from herd_names.csv"""
 
-    HerdArea.query.delete()  # deletes rows before adding so that data is not duplicated
+    # HerdArea.query.delete()  # deletes rows before adding so that data is not duplicated
 
     #reads the csv and inserts the data in the table
     csvfile = open('csvs/herd_names.csv')
     data = csv.reader(csvfile)
     next(data, None)  #skip the header row
 
-    for each in data:
-        herds = HerdAreas(herd_id=each[0],
-                            state_id=each[2],
-                            name=each[1],
-                            gis=each[3],)
+    for row in data:
+        row = [element if len(element) > 0 else None for element in row]
+        herds = HerdArea(herd_id=row[0],
+                            state_id=row[2],
+                            herd_name=row[1],
+                            gis_data=row[3],)
 
         db.session.add(herds)
     db.session.commit()
