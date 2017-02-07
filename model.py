@@ -60,11 +60,12 @@ class HerdArea(db.Model):
 
         return "<\nHerdArea %s -- id: %s in %s>" % (self.herd_name.title(), self.herd_id, self.state_id)
 
-class AreaData(db.Model):
+class HAData(db.Model):
     """Herd Area data per year"""
 
     __tablename__ = "ha_data_by_year"
 
+    ha_by_year = db.Column(db.Integer, autoincrement=True, primary_key=True)
     herd_id = db.Column(db.Text,
         db.ForeignKey('herd_areas.herd_id'),
         nullable=False)
@@ -74,14 +75,39 @@ class AreaData(db.Model):
     horse_population = db.Column(db.Integer, nullable=True)
     burro_population = db.Column(db.Integer, nullable=True)
     last_gather = db.Column(db.DateTime, nullable=True)
-    __table_args__ = (db.PrimaryKeyConstraint('year', 'herd_id'),
+    __table_args__ = (db.UniqueConstraint('year', 'herd_id'),
     )
 
-    herd_areas = db.relationship('HerdArea', backref='ha_data_by_year')
+    has = db.relationship('HerdArea', backref='ha_data_by_year')
 
     def __repr__(self):
         """Prints herd area data"""
-        return "<\nAreaData %s -- %s" % (self.herd_id, self.name)
+        return "<\nHerdAreaData %s -- %s" % (self.herd_id, self.name)
+
+class HMAData(db.Model):
+    """Herd Management Area data per year"""
+
+    __tablename__ = "hma_data_by_year"
+
+    hma_yr_id = db.Column(db.Integer,
+        db.ForeignKey('ha_data_by_year.ha_by_year'),
+        primary_key=True,
+        nullable=False)
+    hma_blm_acres = db.Column(db.Integer, nullable=True)
+    hma_other_acres = db.Column(db.Integer, nullable=True)
+    horse_aml_low = db.Column(db.Integer, nullable=True)
+    horse_aml_high = db.Column(db.Integer, nullable=True)
+    burro_aml_low = db.Column(db.Integer, nullable=True)
+    burro_aml_high = db.Column(db.Integer, nullable=True)
+    recent_count = db.Column(db.DateTime, nullable=True)
+    most_recent_aml = db.Column(db.DateTime, nullable=True)
+
+
+    hmas = db.relationship('HAData', backref='hma_data_by_year')
+
+    def __repr__(self):
+        """Prints herd area data"""
+        return "<\nHMAData %s -- %s" % (self.herd_id, self.name)
 
 ##############################################################################
 # Helper functions
