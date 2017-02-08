@@ -3,6 +3,7 @@
 from jinja2 import StrictUndefined
 
 from flask import Flask, jsonify
+from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db
@@ -19,9 +20,10 @@ app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
 
 
-
-
-
+@app.route('/')
+def homepage():
+    """Homepage"""
+    return render_template("homepage.html")
 
 
 

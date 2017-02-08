@@ -81,7 +81,7 @@ def load_herd_area_data():
     # AreaData.query.delete()  # deletes rows before adding so that data is not duplicated
 
     #loops through all csv files and imports them
-    for year in range(2016, 2017):
+    for year in range(2015, 2017):
         csvfile = open("csvs/"+str(year)+".csv")
         data = csv.reader(csvfile)
         next(data, None)  #skip the header row
