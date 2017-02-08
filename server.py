@@ -1,4 +1,5 @@
 """Mustang Data."""
+import os
 
 from jinja2 import StrictUndefined
 
@@ -6,7 +7,7 @@ from flask import Flask, jsonify
 from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db
+from model import connect_to_db, db, State, StateData, HerdArea, HAData
 
 
 app = Flask(__name__)
@@ -23,7 +24,12 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def homepage():
     """Homepage"""
-    return render_template("homepage.html")
+
+    states = StateData.query.all()
+
+    return render_template("googlemapshomepage.html",
+                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
+                            states=states)
 
 
 

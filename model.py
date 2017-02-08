@@ -60,6 +60,16 @@ class HerdArea(db.Model):
 
         return "<\nHerdArea %s -- id: %s in %s>" % (self.herd_name.title(), self.herd_id, self.state_id)
 
+    # @property
+    # def serialize(self):
+    #    """Return object data in easily serializeable format"""
+    #    return {
+    #        'id'         : self.id,
+    #        'modified_at': dump_datetime(self.modified_at),
+    #        # This is an example how to deal with Many2Many relations
+    #        'many2many'  : self.serialize_many2many
+    #    }
+
 class HAData(db.Model):
     """Herd Area data per year"""
 
