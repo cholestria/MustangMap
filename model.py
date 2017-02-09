@@ -23,7 +23,7 @@ class StateData(db.Model):
 
     __tablename__ = "state_data"
 
-    year = db.Column(db.Integer, nullable=False)
+    year = db.Column(db.Integer, nullable=False, autoincrement=False)
     state_id = db.Column(db.String(3),
         db.ForeignKey('states.state_id'),
         nullable=False)
@@ -73,20 +73,19 @@ class HAData(db.Model):
 
     __tablename__ = "ha_data_by_year"
 
-    ha_by_year = db.Column(db.Integer, autoincrement=True, primary_key=True)
     herd_id = db.Column(db.Text,
         db.ForeignKey('herd_areas.herd_id'),
         nullable=False)
-    year = db.Column(db.Integer)
+    year = db.Column(db.Integer, nullable=False, autoincrement=False)
     ha_blm_acres = db.Column(db.Integer, nullable=True)
     ha_other_acres = db.Column(db.Integer, nullable=True)
     horse_population = db.Column(db.Integer, nullable=True)
     burro_population = db.Column(db.Integer, nullable=True)
     last_gather = db.Column(db.DateTime, nullable=True)
-    __table_args__ = (db.UniqueConstraint('year', 'herd_id'),
+    __table_args__ = (db.PrimaryKeyConstraint('herd_id', 'year'),
     )
 
-    has = db.relationship('HerdArea', backref=db.backref('ha_data_by_year'))
+    herd_area = db.relationship('HerdArea', backref=db.backref('ha_data_by_year'))
 
     def __repr__(self):
         """Prints herd area data"""
@@ -97,10 +96,11 @@ class HMAData(db.Model):
 
     __tablename__ = "hma_data_by_year"
 
-    hma_yr_id = db.Column(db.Integer,
-        db.ForeignKey('ha_data_by_year.ha_by_year'),
-        primary_key=True,
+    herd_id = db.Column(db.Text,
+        db.ForeignKey('herd_areas.herd_id'),
         nullable=False)
+    year = db.Column(db.Integer, nullable=False, autoincrement=False)
+
     hma_blm_acres = db.Column(db.Integer, nullable=True)
     hma_other_acres = db.Column(db.Integer, nullable=True)
     horse_aml_low = db.Column(db.Integer, nullable=True)
@@ -110,8 +110,10 @@ class HMAData(db.Model):
     recent_count = db.Column(db.DateTime, nullable=True)
     most_recent_aml = db.Column(db.DateTime, nullable=True)
 
+    __table_args__ = (db.PrimaryKeyConstraint('herd_id', 'year'),
+    )
 
-    hmas = db.relationship('HAData', backref=db.backref('hma_data_by_year'))
+    herd_area = db.relationship('HerdArea', backref=db.backref('hma_data_by_year'))
 
     def __repr__(self):
         """Prints herd area data"""
@@ -135,4 +137,5 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
+    db.create_all()
     print "Connected to DB."

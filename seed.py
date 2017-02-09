@@ -102,8 +102,8 @@ def load_herd_area_data():
                                     horse_population=row[8],
                                     burro_population=row[12],
                                     last_gather=last_gather)
-                hma_info = HMAData(
-                                    hma_year_id=herd_info.ha_by_year,
+                hma_info = HMAData(herd_id=row[1],
+                                    year=year,
                                     hma_blm_acres=row[4],
                                     hma_other_acres=row[5],
                                     horse_aml_low=row[6],
