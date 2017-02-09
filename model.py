@@ -10,7 +10,7 @@ class State(db.Model):
     __tablename__ = "states"
 
     state_id = db.Column(db.String(3), primary_key=True)
-    state_name = db.Column(db.Text, unique=True, nullable=False)
+    name = db.Column(db.Text, unique=True, nullable=False)
 
     def __repr__(self):
         """Prints state object information"""
@@ -31,15 +31,22 @@ class StateData(db.Model):
     burro_adoptions = db.Column(db.Integer, nullable=True, default=None)
     horse_removals = db.Column(db.Integer, nullable=True, default=None)
     burro_removals = db.Column(db.Integer, nullable=True, default=None)
-    __table_args__ = (db.PrimaryKeyConstraint('year', 'state_id'),
+    __table_args__ = (db.PrimaryKeyConstraint('year', 'state_id', name="state_per_year"),
         )
 
-    state = db.relationship('State', backref='state_data')
+    state = db.relationship('State', backref=db.backref('state_data'))
 
     def __repr__(self):
         """Prints state data information"""
 
-        return "<StateData \n %s %s -- horses adopted: %s burros adopted: %s\n horses removed: %s burros removed: %s>" % (self.year, self.state_id, self.horse_adoptions, self.burro_adoptions, self.horse_removals, self.burro_removals)
+        return "<\nStateData %s %s -- horses adopted: %s burros adopted: %s\n horses removed: %s burros removed: %s>" % (self.year, self.state_id, self.horse_adoptions, self.burro_adoptions, self.horse_removals, self.burro_removals)
+
+    def dictionary_representation(self):
+
+        return {"year": self.year,
+                "state_id": self.state_id,
+                "horse_adoptions": self.horse_adoptions
+                }
 
 class HerdArea(db.Model):
     """Herd Area basic information"""
@@ -53,22 +60,13 @@ class HerdArea(db.Model):
         nullable=False)
     gis_data = db.Column(db.Text, nullable=True)
 
-    state = db.relationship('State', backref='herd_areas')
+    state = db.relationship('State', backref=db.backref('herd_areas'))
 
     def __repr__(self):
         """Prints herd area information"""
 
         return "<\nHerdArea %s -- id: %s in %s>" % (self.herd_name.title(), self.herd_id, self.state_id)
 
-    # @property
-    # def serialize(self):
-    #    """Return object data in easily serializeable format"""
-    #    return {
-    #        'id'         : self.id,
-    #        'modified_at': dump_datetime(self.modified_at),
-    #        # This is an example how to deal with Many2Many relations
-    #        'many2many'  : self.serialize_many2many
-    #    }
 
 class HAData(db.Model):
     """Herd Area data per year"""
@@ -88,7 +86,7 @@ class HAData(db.Model):
     __table_args__ = (db.UniqueConstraint('year', 'herd_id'),
     )
 
-    has = db.relationship('HerdArea', backref='ha_data_by_year')
+    has = db.relationship('HerdArea', backref=db.backref('ha_data_by_year'))
 
     def __repr__(self):
         """Prints herd area data"""
@@ -113,7 +111,7 @@ class HMAData(db.Model):
     most_recent_aml = db.Column(db.DateTime, nullable=True)
 
 
-    hmas = db.relationship('HAData', backref='hma_data_by_year')
+    hmas = db.relationship('HAData', backref=db.backref('hma_data_by_year'))
 
     def __repr__(self):
         """Prints herd area data"""

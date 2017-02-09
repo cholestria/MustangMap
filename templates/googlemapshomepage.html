@@ -14,6 +14,13 @@
         margin-left: auto;
         margin-right: auto;
       }
+      #state_text {
+        height: 400px;
+        width: 700px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
       /* Optional: Makes the sample page fill the window. */
       html, body {
         height: 100%;
@@ -30,7 +37,7 @@
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
-          center: {lat: 37, lng: -114}
+          center: {lat: 40, lng: -115}
         });
 
         map.data.loadGeoJson('static/states.json');
@@ -40,6 +47,32 @@
           fillColor: 'blue',
           strokeWeight: 2
         });
+
+        // Set the fill color to red when the feature is clicked.
+        map.data.addListener('click', function(event) {
+           map.data.overrideStyle(event.feature, {fillColor: 'red'});
+        });
+
+        // When the user hovers, tempt them to click by outlining the letters.
+        // Call revertStyle() to remove all overrides. This will use the style rules
+        // defined in the function passed to setStyle()
+        map.data.addListener('mouseover', function(event) {
+          map.data.revertStyle();
+          map.data.overrideStyle(event.feature, {strokeWeight: 4});
+        });
+
+        map.data.addListener('mouseout', function(event) {
+          map.data.revertStyle();
+        });
+        // Set mouseover event for each feature.
+        // map.data.addListener('mouseover', function(event) {
+        //   document.getElementById('info-box').textContent =
+        //       event.feature.getProperty('letter');
+        // });
+
+        var infowindow = new google.maps.InfoWindow({
+          content: "My random string"
+        });
       }
 
 
@@ -48,13 +81,10 @@
     src="https://maps.googleapis.com/maps/api/js?key={{ secret_key }}&callback=initMap"
     async defer></script>
 
-    <div id="text" class="container-fluid">
+    <div id="state_text" class="container-fluid">
     <h2>States</h2>
-    <ul>
       {% for state in states %}
-          <li>
-                {{ state.state_id }} {{ state.year }}
-          </li>
+             {{state}}: {% for year in states[state] %}<a href="/data/{{state}}/{{year}}">{{year}}</a>, {% endfor %}<br>
       {% endfor %}
 
 

@@ -20,19 +20,38 @@ app.secret_key = "ABC"
 # error.
 app.jinja_env.undefined = StrictUndefined
 
+def states_dictionary():
+    """Makes States Dictionary"""
+
+    states = [each for each in StateData.query.all()]
+    states_dict = {}
+
+    for i in states:
+        if i.state_id not in states_dict:
+            states_dict[(i.state_id)] = [i.year]
+        else:
+            states_dict[i.state_id].append(i.year)
+    return states_dict
 
 @app.route('/')
 def homepage():
     """Homepage"""
 
-    states = StateData.query.all()
+    states_dict = states_dictionary()
 
     return render_template("googlemapshomepage.html",
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                            states=states)
+                            states=states_dict)
+
+@app.route('/data/<st>/<yr>')
+def state_data_per_year(st, yr): #id must be combo of (year, state)
+    """Mustang Data Per year"""
+
+    state_data_per_year = StateData.query.get((int(yr), st))
+    #example: StateData.query.get((2000,"CA"))
 
 
-
+    return jsonify(state_data_per_year.dictionary_representation())
 
 
 

@@ -29,7 +29,7 @@ def load_states():
 
     for each in data:
         state = State(state_id=each[0],
-                        state_name=each[1])
+                    name=each[1])
 
         db.session.add(state)
     db.session.commit()
