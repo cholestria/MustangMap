@@ -15,7 +15,7 @@ class State(db.Model):
     def __repr__(self):
         """Prints state object information"""
 
-        return "<State %s: %s>" % (self.state_id, self.state_name)
+        return "<State %s: %s>" % (self.state_id, self.name)
 
 
 class StateData(db.Model):

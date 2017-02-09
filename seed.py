@@ -29,7 +29,7 @@ def load_states():
 
     for each in data:
         state = State(state_id=each[0],
-                    name=each[1])
+                        name=each[1])
 
         db.session.add(state)
     db.session.commit()
@@ -87,31 +87,36 @@ def load_herd_area_data():
         next(data, None)  #skip the header row
 
         for row in data:
-            row = [element if len(element) > 0 else None for element in row]
-            if row[15] is not None:
-                last_gather = datetime.strptime(row[15], '%B %Y')
-            if row[14] is not None:
-                inventory = datetime.strptime(row[14], '%B %Y')
-            if row[16] is not None:
-                most_recent_aml = datetime.strptime(row[16], '%Y')
-            herd_info = HAData(herd_id=row[1],
-                                year=year,
-                                ha_blm_acres=row[2],
-                                ha_other_acres=row[3],
-                                horse_population=row[8],
-                                burro_population=row[12],
-                                last_gather=last_gather)
-            hma_info = HMAData(
-                                hma_blm_acres=row[4],
-                                hma_other_acres=row[5],
-                                horse_aml_low=row[6],
-                                horse_aml_high=row[7],
-                                burro_aml_low=row[10],
-                                burro_aml_high=row[11],
-                                recent_count=inventory,
-                                most_recent_aml=most_recent_aml
-                                )
-            db.session.add(herd_info)
+            try:
+                row = [element if len(element) > 0 else None for element in row]
+                if row[15] is not None:
+                    last_gather = datetime.strptime(row[15], '%B %Y')
+                if row[14] is not None:
+                    inventory = datetime.strptime(row[14], '%B %Y')
+                if row[16] is not None:
+                    most_recent_aml = datetime.strptime(row[16], '%Y')
+                herd_info = HAData(herd_id=row[1],
+                                    year=year,
+                                    ha_blm_acres=row[2],
+                                    ha_other_acres=row[3],
+                                    horse_population=row[8],
+                                    burro_population=row[12],
+                                    last_gather=last_gather)
+                hma_info = HMAData(
+                                    hma_year_id=herd_info.ha_by_year,
+                                    hma_blm_acres=row[4],
+                                    hma_other_acres=row[5],
+                                    horse_aml_low=row[6],
+                                    horse_aml_high=row[7],
+                                    burro_aml_low=row[10],
+                                    burro_aml_high=row[11],
+                                    recent_count=inventory,
+                                    most_recent_aml=most_recent_aml
+                                    )
+                db.session.add(herd_info)
+                db.session.add(hma_info)
+            except Exception as detail:
+                print "failed to insert" + row + detail
         db.session.commit()
 
 if __name__ == "__main__":
