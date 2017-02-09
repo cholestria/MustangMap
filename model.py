@@ -17,6 +17,12 @@ class State(db.Model):
 
         return "<State %s: %s>" % (self.state_id, self.name)
 
+    def dictionary_representation(self):
+
+        return {"state_id": self.state_id,
+                "name": self.name,
+                }
+
 
 class StateData(db.Model):
     """Per State Data"""
@@ -45,7 +51,10 @@ class StateData(db.Model):
 
         return {"year": self.year,
                 "state_id": self.state_id,
-                "horse_adoptions": self.horse_adoptions
+                "horse_adoptions": self.horse_adoptions,
+                "burro_adoptions": self.burro_adoptions,
+                "horse_removals": self.horse_removals,
+                "burro_removals": self.burro_removals,
                 }
 
 class HerdArea(db.Model):
@@ -90,6 +99,16 @@ class HAData(db.Model):
     def __repr__(self):
         """Prints herd area data"""
         return "<\nHerdAreaData %s -- %s" % (self.herd_id, self.name)
+
+    def dictionary_representation(self):
+
+        return {"year": self.year,
+                "state_id": self.state_id,
+                "horse_adoptions": self.horse_adoptions,
+                "burro_adoptions": self.burro_adoptions,
+                "horse_removals": self.horse_removals,
+                "burro_removals": self.burro_removals,
+                }
 
 class HMAData(db.Model):
     """Herd Management Area data per year"""

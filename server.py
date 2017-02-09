@@ -33,6 +33,32 @@ def states_dictionary():
             states_dict[i.state_id].append(i.year)
     return states_dict
 
+def state_by_year_info(st):
+    """returns info by state per year"""
+
+    all_years = [each for each in StateData.query.filter(StateData.state_id==st).all()]
+    state_dict = {}
+
+    for i in all_years:
+        if i.year not in state_dict:
+            state_dict[(i.year)] = [i.horse_adoptions, i.burro_adoptions, i.horse_removals, i.burro_removals]
+
+    return state_dict
+
+
+
+@app.route('/chart/<st>')
+def chart_per_state(st):
+    """Chart Per State"""
+
+    return jsonify(state_by_year_info(st))
+
+@app.route('/chart')
+def basic_chart():
+    """Chart example"""
+
+    return render_template("chart.html")
+
 @app.route('/')
 def homepage():
     """Homepage"""
