@@ -23,7 +23,7 @@ app.jinja_env.undefined = StrictUndefined
 def states_dictionary():
     """Makes States Dictionary"""
 
-    states = [each for each in StateData.query.all()]
+    states = StateData.query.all()
     states_dict = {}
 
     for i in states:
@@ -34,27 +34,31 @@ def states_dictionary():
     return states_dict
 
 def state_by_year_info(st):
-    """returns info by state per year"""
+    """Returns per year removal and adoption info for a state"""
 
-    all_years = [each for each in StateData.query.filter(StateData.state_id==st).all()]
+    all_years = StateData.query.filter(StateData.state_id==st).options(db.joinedload('state')).all()
+    state_name = all_years[0].state.name
     state_dict = {}
-    footnote = {}
+    footnote_dict = {}
 
     for i in all_years:
+        horse_removals = i.horse_removals
+
         if i.horse_removals is None:
-            i.horse_removals = 0
-            footnote[(i.year)] = "no data was reported"
-    for i in all_years:
+            horse_removals = 0
+            footnote_dict[(i.year)] = "no horse removal data was reported"
+
         if i.year not in state_dict:
-            # { "state_data" : ...., "footnotes" : ... }
-            state_dict[(i.year)] = [i.horse_adoptions, i.burro_adoptions, i.horse_removals, i.burro_removals]
+            state_dict[(i.year)] = [i.horse_adoptions, i.burro_adoptions, horse_removals, i.burro_removals]
 
-            # return 0 if null to deal with missing data
-            # add a footnote to footnotes list every time a null is replaced by 0
-            # return a dictionary that contains both of these dictionaries
-            # + state name
+    #create a master dictionary that contains all information
+    master_state_dict = {"StateName": state_name,
+                "Footnotes": footnote_dict,
+                "StateData": state_dict,
+                }
 
-    return state_dict
+
+    return master_state_dict
     #make json return each year's data as a dictionary instead of list
 
 

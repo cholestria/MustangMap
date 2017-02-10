@@ -16,7 +16,13 @@
     <script>
     "use strict";
         var years = [];
+        var year_object;
+        var footnote_object;
+        var footnote_list;
         var result;
+        var header_start = "Adoptions and Removals in "
+        var state_name;
+        var header_finish = " Over Time"
         var horses_adopted = [];
         var burros_adopted = [];
         var horses_removed = [];
@@ -24,15 +30,21 @@
 
         $.get("/statedata/{{st}}", function(data) {
             result=data;
-            years = Object.keys(result);
+            state_name=result.StateName;
+            year_object=result.StateData;
+            years=Object.keys(year_object);
+            footnote_object=result.Footnotes
+            footnote_list=Object.keys(footnote_object)
 
             for (var i=0; i < years.length; i++) {
                 var year = years[i];
-                horses_adopted.push(result[year][0]);
-                burros_adopted.push(result[year][1]);
-                horses_removed.push(result[year][2]);
-                burros_removed.push(result[year][3]);
+                horses_adopted.push(year_object[year][0]);
+                burros_adopted.push(year_object[year][1]);
+                horses_removed.push(year_object[year][2]);
+                burros_removed.push(year_object[year][3]);
             }
+            var header = header_start.concat(state_name, header_finish);
+
             Highcharts.setOptions({
                 lang: {
                     thousandsSep: ','
@@ -44,10 +56,10 @@
                     type: 'areaspline'
                 },
                 title: {
-                    text: 'Horses and Burros in "State" over time'
+                    text: header
                 },
                 subtitle: {
-                    text: 'Source: BLM'
+                    text: "Source: BLM"
                 },
                 legend: {
                     // layout: 'vertical',
@@ -72,7 +84,13 @@
                     valueSuffix: ' '
                 },
                 credits: {
-                    enabled: false
+                    enabled: true,
+                    text: 'Example.com',
+                    href: 'http://www.example.com',
+                    position: {
+                        align: 'left',
+                        x: 20
+                    }
                 },
                 plotOptions: {
                     areaspline: {
