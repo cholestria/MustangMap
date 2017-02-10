@@ -42,15 +42,8 @@
                 title: {
                     text: 'Horses and Burros in "State" over time'
                 },
-                legend: {
-                    layout: 'vertical',
-                    align: 'left',
-                    verticalAlign: 'top',
-                    x: 400,
-                    y: 50,
-                    floating: true,
-                    borderWidth: 1,
-                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                subtitle: {
+                    text: 'Source: BLM'
                 },
                 xAxis: {
                     categories: years,
@@ -61,7 +54,7 @@
                     }
                 },
                 tooltip: {
-                    shared: true,
+                    shared: false,
                     valueSuffix: ' '
                 },
                 credits: {
