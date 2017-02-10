@@ -23,12 +23,12 @@ app.jinja_env.undefined = StrictUndefined
 def states_dictionary():
     """Makes States Dictionary"""
 
-    states = StateData.query.all()
+    states = StateData.query.options(db.joinedload('state')).all()
     states_dict = {}
 
     for i in states:
         if i.state_id not in states_dict:
-            states_dict[(i.state_id)] = [i.year]
+            states_dict[(i.state_id)] = [i.state.name]
         else:
             states_dict[i.state_id].append(i.year)
     return states_dict
@@ -51,12 +51,11 @@ def state_by_year_info(st):
         if i.year not in state_dict:
             state_dict[(i.year)] = [i.horse_adoptions, i.burro_adoptions, horse_removals, i.burro_removals]
 
-    #create a master dictionary that contains all information
+    #creates a master dictionary that contains all information
     master_state_dict = {"StateName": state_name,
                 "Footnotes": footnote_dict,
                 "StateData": state_dict,
                 }
-
 
     return master_state_dict
     #make json return each year's data as a dictionary instead of list
@@ -107,7 +106,6 @@ if __name__ == "__main__":
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
-
 
 
     app.run(port=5000, host='0.0.0.0')

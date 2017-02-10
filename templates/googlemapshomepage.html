@@ -54,12 +54,12 @@
         // Set the stroke width, and fill color for each polygon
         map.data.setStyle({
           fillColor: 'blue',
-          strokeWeight: 2
+          strokeWeight: 1
         });
 
         // Set the fill color to red when the feature is clicked.
         map.data.addListener('click', function(event) {
-           map.data.overrideStyle(event.feature, {fillColor: 'red'});
+          map.data.overrideStyle(event.feature, {fillColor: 'red'});
         });
 
         // When the user hovers, tempt them to click by outlining the letters.
@@ -93,7 +93,7 @@
     <div id="state_text" class="container-fluid">
     <h2>States</h2>
       {% for state in states %}
-             {{state}}: {% for year in states[state] %}<a href="/data/{{state}}/{{year}}">{{year}}</a>, {% endfor %}<br>
+             <a href="/chart/{{state}}">{{states[state][0]}}</a><br>
       {% endfor %}
 
 
