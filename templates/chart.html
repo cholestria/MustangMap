@@ -2,7 +2,7 @@
 <html>
   <head>
     <script src="http://code.jquery.com/jquery.js"></script>
-    <title>Data Layer: Simple</title>
+    <title>State Chart</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <style>
@@ -40,14 +40,14 @@
                     type: 'areaspline'
                 },
                 title: {
-                    text: 'Average fruit consumption during one week'
+                    text: 'Horses and Burros in "State" over time'
                 },
                 legend: {
                     layout: 'vertical',
                     align: 'left',
                     verticalAlign: 'top',
                     x: 400,
-                    y: 100,
+                    y: 50,
                     floating: true,
                     borderWidth: 1,
                     backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
@@ -57,12 +57,12 @@
                 },
                 yAxis: {
                     title: {
-                        text: 'Fruit units'
+                        text: '# of horses or burros'
                     }
                 },
                 tooltip: {
                     shared: true,
-                    valueSuffix: ' units'
+                    valueSuffix: ' '
                 },
                 credits: {
                     enabled: false
@@ -73,7 +73,7 @@
                     }
                 },
                 series: [{
-                    name: 'Horse Adopted',
+                    name: 'Horses Adopted',
                     data: horses_adopted
                 }, {
                     name: 'Burros Adopted',
