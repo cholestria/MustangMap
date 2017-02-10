@@ -33,7 +33,11 @@
                 horses_removed.push(result[year][2]);
                 burros_removed.push(result[year][3]);
             }
-
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                }
+            });
 
             Highcharts.chart('container', {
                 chart: {
@@ -44,6 +48,16 @@
                 },
                 subtitle: {
                     text: 'Source: BLM'
+                },
+                legend: {
+                    // layout: 'vertical',
+                    // align: 'left',
+                    // verticalAlign: 'top',
+                    // // x: 400,
+                    // y: 50,
+                    // floating: true,
+                    borderWidth: 0,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
                 },
                 xAxis: {
                     categories: years,

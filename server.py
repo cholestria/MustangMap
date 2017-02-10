@@ -38,13 +38,24 @@ def state_by_year_info(st):
 
     all_years = [each for each in StateData.query.filter(StateData.state_id==st).all()]
     state_dict = {}
+    footnote = {}
 
     for i in all_years:
+        if i.horse_removals is None:
+            i.horse_removals = 0
+            footnote[(i.year)] = "no data was reported"
+    for i in all_years:
         if i.year not in state_dict:
+            # { "state_data" : ...., "footnotes" : ... }
             state_dict[(i.year)] = [i.horse_adoptions, i.burro_adoptions, i.horse_removals, i.burro_removals]
 
-    return state_dict
+            # return 0 if null to deal with missing data
+            # add a footnote to footnotes list every time a null is replaced by 0
+            # return a dictionary that contains both of these dictionaries
+            # + state name
 
+    return state_dict
+    #make json return each year's data as a dictionary instead of list
 
 
 @app.route('/statedata/<st>')
