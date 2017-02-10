@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="http://code.jquery.com/jquery.js"></script>
     <title>Data Layer: Simple</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
@@ -13,69 +14,84 @@
 
     <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
     <script>
-        Highcharts.chart('container', {
-            chart: {
-                type: 'areaspline'
-            },
-            title: {
-                text: 'Average fruit consumption during one week'
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'left',
-                verticalAlign: 'top',
-                x: 400,
-                y: 100,
-                floating: true,
-                borderWidth: 1,
-                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-            },
-            xAxis: {
-                categories: [
-                    '2000',
-                    '2001',
-                    '2002',
-                    '2003',
-                    '2004',
-                    '2005',
-                    '2006',
-                    '2007',
-                    '2008',
-                    '2009',
-                    '2010',
-                    '2011',
-                    '2012',
-                    '2013',
-                    '2014',
-                    '2015',
-                    '20016'
-                ],
-            },
-            yAxis: {
+    "use strict";
+        var years = [];
+        var result;
+        var horses_adopted = [];
+        var burros_adopted = [];
+        var horses_removed = [];
+        var burros_removed = [];
+
+        $.get("/statedata/{{st}}", function(data) {
+            result=data;
+            years = Object.keys(result);
+
+            for (var i=0; i < years.length; i++) {
+                var year = years[i];
+                horses_adopted.push(result[year][0]);
+                burros_adopted.push(result[year][1]);
+                horses_removed.push(result[year][2]);
+                burros_removed.push(result[year][3]);
+            }
+
+
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'areaspline'
+                },
                 title: {
-                    text: 'Fruit units'
-                }
-            },
-            tooltip: {
-                shared: true,
-                valueSuffix: ' units'
-            },
-            credits: {
-                enabled: false
-            },
-            plotOptions: {
-                areaspline: {
-                    fillOpacity: 0.5
-                }
-            },
-            series: [{
-                name: 'John',
-                data: [3, 4, 3, 5, 4, 10, 12, 13]
-            }, {
-                name: 'Jane',
-                data: [1, 3, 4, 3, 3, 5, 4, 0]
-            }]
-        });
+                    text: 'Average fruit consumption during one week'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    x: 400,
+                    y: 100,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                },
+                xAxis: {
+                    categories: years,
+                },
+                yAxis: {
+                    title: {
+                        text: 'Fruit units'
+                    }
+                },
+                tooltip: {
+                    shared: true,
+                    valueSuffix: ' units'
+                },
+                credits: {
+                    enabled: false
+                },
+                plotOptions: {
+                    areaspline: {
+                        fillOpacity: 0.5
+                    }
+                },
+                series: [{
+                    name: 'Horse Adopted',
+                    data: horses_adopted
+                }, {
+                    name: 'Burros Adopted',
+                    data: burros_adopted
+                }, {
+                    name: 'Horses Removed',
+                    data: horses_removed
+                }, {
+                    name: 'Burros Removed',
+                    data: burros_removed
+                }]
+
+
+            });
+         });
     </script>
+
+    <div id="state_text" class="container-fluid">
+    </div>
   </body>
 </html>

@@ -47,17 +47,18 @@ def state_by_year_info(st):
 
 
 
-@app.route('/chart/<st>')
+@app.route('/statedata/<st>')
 def chart_per_state(st):
     """Chart Per State"""
 
     return jsonify(state_by_year_info(st))
 
-@app.route('/chart')
-def basic_chart():
+@app.route('/chart/<st>')
+def basic_chart(st):
     """Chart example"""
 
-    return render_template("chart.html")
+    return render_template("chart.html",
+                            st=st)
 
 @app.route('/')
 def homepage():

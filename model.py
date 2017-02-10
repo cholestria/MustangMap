@@ -1,4 +1,4 @@
-"""Models and database functions for Ratings project."""
+"""Models and database functions for MustangMap project."""
 
 from flask_sqlalchemy import SQLAlchemy
 
