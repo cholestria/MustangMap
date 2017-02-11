@@ -74,8 +74,14 @@ class HerdArea(db.Model):
     def __repr__(self):
         """Prints herd area information"""
 
-        return "<\nHerdArea %s -- id: %s in %s>" % (self.herd_name.title(), self.herd_id, self.state_id)
+        return "\n<HerdArea %s -- id: %s in %s>" % (self.herd_name.title(), self.herd_id, self.state_id)
 
+    def dictionary_representation(self):
+
+        return {"herd_id": self.herd_id,
+                "herd_name": self.herd_name,
+                "state_id": self.state_id,
+                }
 
 class HAData(db.Model):
     """Herd Area data per year"""
@@ -94,20 +100,20 @@ class HAData(db.Model):
     __table_args__ = (db.PrimaryKeyConstraint('herd_id', 'year'),
     )
 
-    herd_area = db.relationship('HerdArea', backref=db.backref('ha_data_by_year'))
+    herd_areas = db.relationship('HerdArea', backref=db.backref('ha_data_by_year'))
 
     def __repr__(self):
         """Prints herd area data"""
-        return "<\nHerdAreaData %s -- %s" % (self.herd_id, self.name)
+        return "\n<HerdAreaData %s -- year: %s, horse pop: %s, burro pop: %s" % (self.herd_id, self.year, self.horse_population, self.burro_population )
 
     def dictionary_representation(self):
 
-        return {"year": self.year,
-                "state_id": self.state_id,
-                "horse_adoptions": self.horse_adoptions,
-                "burro_adoptions": self.burro_adoptions,
-                "horse_removals": self.horse_removals,
-                "burro_removals": self.burro_removals,
+        return {"herd_id": self.herd_id,
+                "year": self.year,
+                "ha_blm_acres": self.ha_blm_acres,
+                "ha_other_acres": self.ha_other_acres,
+                "horse_population": self.horse_population,
+                "last_gather": self.burro_population,
                 }
 
 class HMAData(db.Model):
@@ -136,7 +142,15 @@ class HMAData(db.Model):
 
     def __repr__(self):
         """Prints herd area data"""
-        return "<\nHMAData %s -- %s" % (self.herd_id, self.name)
+        return "\n<HMAData %s -- %s" % (self.herd_id, self.name)
+
+    def dictionary_representation(self):
+
+        return {"herd_id": self.herd_id,
+                "year": self.year,
+                "hma_blm_acres": self.hma_blm_acres,
+                "hma_other_acres": self.hma_other_acres,
+                }
 
 ##############################################################################
 # Helper functions

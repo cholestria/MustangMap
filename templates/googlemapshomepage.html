@@ -49,6 +49,7 @@
           center: {lat: 40, lng: -115}
         });
 
+
         map.data.loadGeoJson('static/states.json');
 
         // Set the stroke width, and fill color for each polygon
@@ -67,7 +68,7 @@
         // defined in the function passed to setStyle()
         map.data.addListener('mouseover', function(event) {
           map.data.revertStyle();
-          map.data.overrideStyle(event.feature, {strokeWeight: 4});
+          map.data.overrideStyle(event.feature, {strokeWeight: 3});
         });
 
         map.data.addListener('mouseout', function(event) {

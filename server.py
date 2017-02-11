@@ -67,6 +67,12 @@ def chart_per_state(st):
 
     return jsonify(state_by_year_info(st))
 
+@app.route('/population/<st>')
+def populations_by_state(st):
+    """Returns JSON of state horse and burro population data"""
+
+
+
 @app.route('/chart/<st>')
 def basic_chart(st):
     """Chart example"""

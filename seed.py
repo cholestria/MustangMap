@@ -69,7 +69,7 @@ def load_herd_areas():
         row = [element if len(element) > 0 else None for element in row]
         herds = HerdArea(herd_id=row[0],
                             state_id=row[2],
-                            herd_name=row[1],
+                            herd_name=row[1].title(),
                             gis_data=row[3],)
 
         db.session.add(herds)

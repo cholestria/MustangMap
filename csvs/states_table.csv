@@ -1,6 +1,6 @@
 state_id,state_name
 AZ,Arizona
-CA,California 
+CA,California
 CO,Colorado
 ES,Eastern States
 ID,Idaho
@@ -9,5 +9,5 @@ NV,Nevada
 NM,New Mexico
 OR,Oregon 
 UT,Utah
-WY,Wyoming 
+WY,Wyoming
 NAT,National Program
