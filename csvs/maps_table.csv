@@ -1,0 +1,14 @@
+state_id,file_name
+AZ,arizona.geojson
+CA,california.geojson
+CO,colorado.geojson
+ES,es.geojson
+ID,idaho.geojson
+MT,montana.geojson
+NV,nevada.geojson
+NM,new_mexico.geojson
+OR,oregon_ha.geojson
+OR,oregon_hma.geojson
+UT,utah.geojson
+WY,tyoming.geojson
+NAT,national.geojson

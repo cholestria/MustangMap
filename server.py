@@ -7,7 +7,7 @@ from flask import Flask, jsonify
 from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, State, StateData, HerdArea, HAData
+from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
 
 
 app = Flask(__name__)
@@ -60,12 +60,23 @@ def state_by_year_info(st):
     return master_state_dict
     #make json return each year's data as a dictionary instead of list
 
+@app.route('/')
+def homepage():
+    """Homepage"""
+
+    states_dict = states_dictionary()
+
+    return render_template("googlemapshomepage.html",
+                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
+                            states=states_dict)
+
 
 @app.route('/statedata/<st>')
 def chart_per_state(st):
     """Chart Per State"""
 
     return jsonify(state_by_year_info(st))
+
 
 @app.route('/population/<st>')
 def populations_by_state(st):
@@ -80,25 +91,19 @@ def basic_chart(st):
     return render_template("chart.html",
                             st=st)
 
-@app.route('/')
-def homepage():
-    """Homepage"""
 
-    states_dict = states_dictionary()
-
-    return render_template("googlemapshomepage.html",
-                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                            states=states_dict)
-
-@app.route('/statemap')
-def state_map():
+@app.route('/map/<state_id>')
+def state_map(state_id):
     """State map"""
 
-    states_dict = states_dictionary()
+    state_maps = StateMapNames.query.filter(StateMapNames.state_id==state_id).all()
+    state_info = State.query.filter(State.state_id==state_id).one()
 
     return render_template("statemap.html",
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                            states=states_dict)
+                            state_id=state_id,
+                            state_info=state_info,
+                            state_maps=state_maps)
 
 @app.route('/data/<st>/<yr>')
 def state_data_per_year(st, yr): #id must be combo of (year, state)

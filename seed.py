@@ -1,7 +1,7 @@
 """Utility file to seed ratings database from MovieLens data in seed_data/"""
 
 from sqlalchemy import func
-from model import State, StateData, HerdArea, HAData, HMAData
+from model import State, StateMapNames, StateData, HerdArea, HAData, HMAData
 
 from model import connect_to_db, db
 from server import app
@@ -15,23 +15,42 @@ def delete_tables():
     HAData.query.delete()
     HerdArea.query.delete()
     StateData.query.delete()
+    StateMapNames.query.delete()
     State.query.delete()
 
 def load_states():
-    """Load state info from sates.csv"""
-
-    # State.query.delete()  # deletes rows before adding so that data is not duplicated
+    """Load state info from sates_table.csv"""
 
     #reads the csv and inserts the data in the table
     csvfile = open('csvs/states_table.csv')
     data = csv.reader(csvfile)
     next(data, None)  # skip the headers
 
-    for each in data:
-        state = State(state_id=each[0],
-                        name=each[1])
+    for row in data:
+        row = [element if len(element) > 0 else None for element in row]
+        state = State(state_id=row[0],
+                        name=row[1],
+                        latitude=row[2],
+                        longitude=row[3],
+                        zoom=row[4])
 
         db.session.add(state)
+    db.session.commit()
+
+def load_maps():
+    """Load state info from maps_table.csv"""
+
+    #reads the csv and inserts the data in the table
+    csvfile = open('csvs/maps_table.csv')
+    data = csv.reader(csvfile)
+    next(data, None)  # skip the headers
+
+    for row in data:
+        row = [element if len(element) > 0 else None for element in row]
+        maps = StateMapNames(state_id=row[0],
+                            map_name=row[1])
+
+        db.session.add(maps)
     db.session.commit()
 
 def load_state_data():
@@ -130,6 +149,7 @@ if __name__ == "__main__":
 
     # Import different types of data
     load_states()
+    load_maps()
     load_state_data()
     load_herd_areas()
     load_herd_area_data()

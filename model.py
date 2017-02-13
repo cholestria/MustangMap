@@ -11,6 +11,10 @@ class State(db.Model):
 
     state_id = db.Column(db.String(3), primary_key=True)
     name = db.Column(db.Text, unique=True, nullable=False)
+    latitude = db.Column(db.Float, nullable=True)
+    longitude = db.Column(db.Float, nullable=True)
+    zoom = db.Column(db.Integer, nullable=True)
+
 
     def __repr__(self):
         """Prints state object information"""
@@ -21,8 +25,36 @@ class State(db.Model):
 
         return {"state_id": self.state_id,
                 "name": self.name,
+               "latitude": self.latitude,
+                "longitude": self.longitude,
+                "zoom": self.zoom,
                 }
 
+class StateMapNames(db.Model):
+    """Map names"""
+
+    ___tablename__ = "maps"
+
+    state_id = db.Column(db.String(3),
+                db.ForeignKey('states.state_id'),
+                primary_key=True,
+                nullable=True)
+    map_name = db.Column(db.Text,
+                        primary_key=True,
+                        nullable=True)
+
+    state =  db.relationship('State', backref=db.backref('maps'))
+
+    def __repr__(self):
+        """Prints map object information"""
+
+        return "<Map %s: %s.>" % (self.state_id, self.map_name)
+
+    def dictionary_representation(self):
+
+        return {"state_id": self.state_id,
+                "map_name": self.map_name,
+                }
 
 class StateData(db.Model):
     """Per State Data"""
