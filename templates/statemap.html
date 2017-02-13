@@ -42,16 +42,6 @@
     <div id="map"></div>
     <script>
 
-      // when given state name return state id?
-      function nameToId(name) {
-        if ( name == "California" ) {
-          return "CA"
-        }
-        else if ( name == "Nevada" ) {
-          return "NV"
-        }
-      }
-
       function getCenter(feature) {
             var bounds = new google.maps.LatLngBounds();
             var listOfLatLngs = [];
@@ -68,13 +58,14 @@
       var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: {lat: 40, lng: -115},
+          zoom: 7,
+          center: {lat: 43.5, lng: -119.8},
           draggable: false,
-          zoomControl: false,
+          zoomControl: true,
         });
 
-        map.data.loadGeoJson('static/states.json');
+        map.data.loadGeoJson('static/oregon_ha.geojson');
+        map.data.loadGeoJson('static/oregon_hma.geojson');
 
 
 
@@ -108,7 +99,7 @@
         // Set mouseover event for each feature.
         map.data.addListener('mouseover', function(event) {
           document.getElementById('info-box').textContent =
-              event.feature.getProperty('NAME');
+              event.feature.getProperty('HA_NAME');
         });
 
       }
@@ -121,13 +112,5 @@
 
     <div id="info-box"></div>
 
-    <div id="state_text" class="container-fluid">
-    <h2>States</h2>
-      {% for state in states %}
-             <a href="/chart/{{state}}">{{states[state][0]}}</a><br>
-      {% endfor %}
-
-
-    </div>
   </body>
 </html>

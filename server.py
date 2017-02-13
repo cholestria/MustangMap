@@ -90,6 +90,16 @@ def homepage():
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
                             states=states_dict)
 
+@app.route('/statemap')
+def state_map():
+    """State map"""
+
+    states_dict = states_dictionary()
+
+    return render_template("statemap.html",
+                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
+                            states=states_dict)
+
 @app.route('/data/<st>/<yr>')
 def state_data_per_year(st, yr): #id must be combo of (year, state)
     """Mustang Data Per year"""
