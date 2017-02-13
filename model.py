@@ -139,13 +139,30 @@ class HAData(db.Model):
         return "\n<HerdAreaData %s -- year: %s, horse pop: %s, burro pop: %s" % (self.herd_id, self.year, self.horse_population, self.burro_population )
 
     def dictionary_representation(self):
+        if self.ha_other_acres is None:
+            ha_other_acres = 0
+        else:
+            ha_other_acres = self.ha_other_acres
+        if self.ha_blm_acres is None:
+            ha_blm_acres = 0
+        else:
+            ha_blm_acres = self.ha_blm_acres
+        if self.horse_population is None:
+            horse_population = 0
+        else:
+            horse_population = self.horse_population
+        if self.burro_population is None:
+            burro_population = 0
+        else:
+            burro_population = self.burro_population
 
         return {"herd_id": self.herd_id,
                 "year": self.year,
-                "ha_blm_acres": self.ha_blm_acres,
-                "ha_other_acres": self.ha_other_acres,
-                "horse_population": self.horse_population,
-                "last_gather": self.burro_population,
+                "ha_blm_acres": ha_blm_acres,
+                "ha_other_acres": ha_other_acres,
+                "horse_population": horse_population,
+                "burro_population": burro_population,
+                "last_gather": self.last_gather,
                 }
 
 class HMAData(db.Model):

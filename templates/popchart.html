@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <title>State Chart</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+    </style>
+  </head>
+  <body>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <script>
+    "use strict";
+        var years = [];
+        var year_object;
+        var result;
+        var state_name;
+        var horses_population = [];
+        var burros_population = [];
+        var horses_removed = [];
+        var burros_removed = [];
+
+        $.get("/populationdata/{{st}}", function(data) {
+            result=data;
+            state_name=result.StateName;
+            year_object=result.StateData;
+            years=Object.keys(year_object);
+
+            for (var i=0; i < years.length; i++) {
+                var year = years[i];
+                horses_population.push(year_object[year][0]);
+                burros_population.push(year_object[year][1]);
+                horses_removed.push(year_object[year][2]);
+                burros_removed.push(year_object[year][3]);
+            }
+            var header = "Population of Horses and Burros in " + state_name +" Over Time" ;
+
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                }
+            });
+
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'areaspline'
+                },
+                title: {
+                    text: header
+                },
+                subtitle: {
+                    text: "Source: BLM"
+                },
+                legend: {
+                    // layout: 'vertical',
+                    // align: 'left',
+                    // verticalAlign: 'top',
+                    // // x: 400,
+                    // y: 50,
+                    // floating: true,
+                    borderWidth: 0,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                },
+                xAxis: {
+                    categories: years,
+                },
+                yAxis: {
+                    title: {
+                        text: '# of horses or burros'
+                    }
+                },
+                tooltip: {
+                    shared: false,
+                    valueSuffix: ' '
+                },
+                credits: {
+                    enabled: false,
+                    text: "blm",
+                    href: 'https://www.blm.gov/wo/st/en/prog/whbprogram/herd_management/Data.html',
+                    position: {
+                        align: 'left',
+                        x: 20
+                    }
+                },
+                plotOptions: {
+                    areaspline: {
+                        fillOpacity: 0.5
+                    }
+                },
+                series: [{
+                    name: 'Horse Population',
+                    data: horses_population
+                }, {
+                    name: 'Burro Population',
+                    data: burros_population
+                }, {
+                    name: 'BLM Acreage',
+                    data: horses_removed
+                }, {
+                    name: 'Other Acreage',
+                    data: burros_removed
+                }]
+
+
+            });
+         });
+    </script>
+
+    <div id="state_text" class="container-fluid">
+    </div>
+  </body>
+</html>

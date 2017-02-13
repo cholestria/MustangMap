@@ -9,7 +9,6 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
 
-
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -60,6 +59,20 @@ def state_by_year_info(st):
     return master_state_dict
     #make json return each year's data as a dictionary instead of list
 
+def ha_data_by_state(st):
+    """Returns a dictionary of population and acreage per HA within a state"""
+
+    herds = HAData.query.options(db.joinedload('herd_areas')).all()
+    dictionary = {}
+
+    for i in herds:
+        if i.herd_areas.state_id==st:
+            if i.herd_id not in dictionary:
+                dictionary[i.herd_id] = {i.year: i.dictionary_representation()}
+            else:
+                dictionary[i.herd_id][i.year] = i.dictionary_representation()
+    return dictionary
+
 @app.route('/')
 def homepage():
     """Homepage"""
@@ -73,23 +86,69 @@ def homepage():
 
 @app.route('/statedata/<st>')
 def chart_per_state(st):
-    """Chart Per State"""
+    """Adoption and Removal Chart Per State"""
 
     return jsonify(state_by_year_info(st))
 
-
-@app.route('/population/<st>')
-def populations_by_state(st):
-    """Returns JSON of state horse and burro population data"""
-
-
-
 @app.route('/chart/<st>')
 def basic_chart(st):
-    """Chart example"""
+    """Chart of Adoptions and removals over time"""
 
     return render_template("chart.html",
                             st=st)
+
+@app.route('/populationdata/<st>')
+def populations_by_state(st):
+    """Returns JSON of state horse and burro population data"""
+
+    all_herds = ha_data_by_state(st)
+
+    def make_horse_pop_sum(year):
+        horse_pop = []
+        for herd in all_herds:
+            horse_pop.append(all_herds[str(herd)][year]['horse_population'])
+        return sum(horse_pop)
+
+    def make_burro_pop_sum(year):
+        burro_pop = []
+        for herd in all_herds:
+            burro_pop.append(all_herds[str(herd)][year]['burro_population'])
+        return sum(burro_pop)
+
+    def make_blm_acreage_sum(year):
+        blm_acres = []
+        for herd in all_herds:
+            blm_acres.append(all_herds[str(herd)][year]['ha_blm_acres'])
+        return sum(blm_acres)
+
+    def make_other_acreage_sum(year):
+        other_acres = []
+        for herd in all_herds:
+            other_acres.append(all_herds[str(herd)][year]['ha_other_acres'])
+        return sum(other_acres)
+
+    pop_dict = {}
+    for year in range(2015, 2017):
+        if year not in pop_dict:
+            pop_dict[year] = [make_horse_pop_sum(year), make_burro_pop_sum(year), make_blm_acreage_sum(year), make_other_acreage_sum(year)]
+
+
+    master_pop_dict = {"StateName": State.query.filter_by(state_id=st).one().name,
+                        "StateData": pop_dict,
+                        }
+
+    return jsonify(master_pop_dict)
+
+
+@app.route('/popchart/<st>')
+def pop_chart_by_state(st):
+
+    return render_template('popchart.html',
+                            st=st)
+
+
+
+
 
 
 @app.route('/map/<state_id>')
