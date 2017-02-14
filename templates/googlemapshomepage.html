@@ -10,7 +10,7 @@
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        height: 400px;
+        height: 350px;
         width: 600px;
         display: block;
         margin-left: auto;
@@ -46,18 +46,6 @@
     <div id="map"></div>
     <script>
 
-      // when given state name return state id
-      // function nameToId(name) {
-      //   if ( name == "California" ) {
-      //     return "CA"
-      //   }
-      //   else if ( name == "Nevada" ) {
-      //     return "NV"
-      //   }
-      //   else if (name == 'Oregon') {
-      //     return "OR"
-      //   }
-      // }
 
     function nameToId(name) {
       var name_dict = {'Arizona': 'AZ', 'California': 'CA', 'Colorado': 'CO', 'Eastern States': 'ES', 'Idaho': 'ID', 'Montana': 'MT', 'National Program': 'NAT', 'New Mexico': 'NM', 'Nevada': 'NV', 'Oregon': 'OR', 'Utah': 'UT', 'Wyoming': 'WY'};
@@ -88,8 +76,6 @@
 
         map.data.loadGeoJson('static/states.json');
 
-
-
         // Set the stroke width, and fill color for each polygon
         map.data.setStyle({
           fillColor: 'blue',
@@ -98,11 +84,14 @@
 
         // Set the fill color to red when the feature is clicked.
         map.data.addListener('click', function(event) {
-          map.data.overrideStyle(event.feature, {fillColor: 'red'});
-          // map.setZoom(5);
+          map.data.overrideStyle(event.feature, {fillColor: 'purple'});
+          map.setZoom(5);
           var center = getCenter(event.feature)
           map.panTo(center)
-          // window.open("http://0.0.0.0:5000/chart/"+nameToId(event.feature.getProperty('NAME')));
+        });
+          map.data.addListener('dblclick', function(event) {
+          map.panTo(center)
+          window.open("http://0.0.0.0:5000/map/"+nameToId(event.feature.getProperty('NAME')));
         });
 
         // When the user hovers, tempt them to click by outlining the letters.
@@ -117,7 +106,7 @@
           map.data.revertStyle();
         });
 
-        // Set mouseover event for each feature.
+        // Set click event for each state feature.
         map.data.addListener('click', function(event) {
           var state_id = nameToId(event.feature.getProperty('NAME'));
 
@@ -145,7 +134,7 @@
                 blm_acreage.push(year_object[year][2]);
                 other_acreage.push(year_object[year][3]);
             }
-            var header = "Population of Horses and Burros in " + state_name +" Over Time" ;
+            var header = "Population of Horses and Burros in " + state_name + " Over Time" ;
 
             Highcharts.setOptions({
                 lang: {
@@ -264,7 +253,7 @@
     src="https://maps.googleapis.com/maps/api/js?key={{ secret_key }}&callback=initMap"
     async defer></script>
 
-    <div id="info-box" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div id="info-box" style="min-width: 310px; height: 200px; margin: 0 auto"></div>
 
     <!-- <div id="info-box" class='container-fluid'></div> -->
 

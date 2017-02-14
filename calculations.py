@@ -27,8 +27,41 @@ def ha_data_by_state(st):
                 dictionary[i.herd_id][i.year] = i.dictionary_representation()
     return dictionary
 
+def ha_data_for_ha_chart(herd_id):
+    """Returns the HA dictionary with additonal json information"""
+
+    a_herd = HAData.query.filter(HAData.herd_id==herd_id).options(db.joinedload('herd_areas')).all()
+    herd_name = a_herd[0].herd_areas.herd_name
+    ha_pop_dict = {}
+    footnote_dict = {}
+
+    for i in a_herd:
+        horse_population = i.horse_population
+        burro_population = i.burro_population
+        blm_acreage = i.ha_blm_acres
+        other_acreage = i.ha_other_acres
+        if i.horse_population is None:
+            horse_population = 0
+            footnote_dict[i.year] = "no horse population data reported for this year"
+        if i.burro_population is None:
+            burro_population = 0
+            if i.year not in footnote_dict:
+                footnote_dict[i.year] = "no burro population data reported for this year"
+            else:
+                footnote_dict[i.year].append("no burro population data reported for this year")
+        if i.year not in ha_pop_dict:
+            ha_pop_dict[(i.year)] = [horse_population, burro_population, blm_acreage, other_acreage]
+
+    master_ha_dict = {"HerdName": herd_name,
+        "Footnotes": footnote_dict,
+        "PopData": ha_pop_dict,
+        }
+
+    return master_ha_dict
+
+
 def state_by_year_info(st):
-    """Returns per year removal and adoption info for a state"""
+    """Returns per year population, removal, and adoption info for a state"""
 
     all_years = StateData.query.filter(StateData.state_id==st).options(db.joinedload('state')).all()
     state_name = all_years[0].state.name
@@ -37,7 +70,6 @@ def state_by_year_info(st):
     state_dict = {}
     footnote_dict = {}
     pop_dict = {}
-    herd_dict = {}
 
     for i in all_years:
         horse_removals = i.horse_removals
@@ -88,8 +120,6 @@ def state_by_year_info(st):
     for year in range(2015, 2017):
         if year not in pop_dict:
             pop_dict[year] = [make_horse_pop_sum(year), make_burro_pop_sum(year), make_blm_acreage_sum(year), make_other_acreage_sum(year)]
-        if year not in herd_dict:
-            herd_dict[year] = []
 
 
     #creates a master dictionary that contains all information

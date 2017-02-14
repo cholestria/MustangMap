@@ -8,7 +8,7 @@ from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
-from calculations import states_dictionary, ha_data_by_state, state_by_year_info
+from calculations import states_dictionary, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart
 
 
 app = Flask(__name__)
@@ -34,11 +34,18 @@ def homepage():
                             states=states_dict)
 
 @app.route('/hachart/<herd_id>')
-def herd_data():
-    """Population per herd area"""
+def herd_area_chart(herd_id):
+    """Population per year for each herd area"""
+
+    return render_template("hachart.html",
+                            herd_id=herd_id)
 
 
+@app.route('/hachartdata/<herd_id>')
+def herd_area_data(herd_id):
+    """Population per year for each herd area"""
 
+    return jsonify(ha_data_for_ha_chart(herd_id))
 
 
 @app.route('/statedata/<st>')
