@@ -37,7 +37,7 @@
                 blm_acreage.push(year_object[year][2]);
                 other_acreage.push(year_object[year][3]);
             }
-            var header = "Population of Horses and Burros in " + state_name +" Over Time" ;
+            var header = "Population of Horses and Burros in " + state_name + " Over Time" ;
 
             Highcharts.setOptions({
                 lang: {
@@ -139,49 +139,6 @@
                     }
 
                 }]
-
-            //     yAxis: {
-            //         title: {
-            //             text: '# of horses or burros'
-            //         }
-            //     }, { //Secondary yAxis
-            //         title: {
-            //             text: 'Population density'
-            //         }
-            //     },
-            //     tooltip: {
-            //         shared: false,
-            //         valueSuffix: ' '
-            //     },
-            //     credits: {
-            //         enabled: false,
-            //         text: "blm",
-            //         href: 'https://www.blm.gov/wo/st/en/prog/whbprogram/herd_management/Data.html',
-            //         position: {
-            //             align: 'left',
-            //             x: 20
-            //         }
-            //     },
-            //     plotOptions: {
-            //         areaspline: {
-            //             fillOpacity: 0.5
-            //         }
-            //     },
-            //     series: [{
-            //         name: 'Horse Population',
-            //         data: horses_population
-            //     }, {
-            //         name: 'Burro Population',
-            //         data: burros_population
-            //     // }, {
-            //     //     name: 'BLM Acreage',
-            //     //     data: horses_removed
-            //     // }, {
-            //     //     name: 'Other Acreage',
-            //     //     data: burros_removed
-            //     }]
-
-
             });
          });
     </script>

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="http://code.jquery.com/jquery.js"></script>
+
     <title>BLM States Map</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
@@ -39,6 +41,8 @@
     </style>
   </head>
   <body>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <div id="map"></div>
     <script>
 
@@ -49,6 +53,9 @@
         }
         else if ( name == "Nevada" ) {
           return "NV"
+        }
+        else if (name == 'Oregon') {
+          return "OR"
         }
       }
 
@@ -106,9 +113,142 @@
         });
 
         // Set mouseover event for each feature.
-        map.data.addListener('mouseover', function(event) {
-          document.getElementById('info-box').textContent =
-              event.feature.getProperty('NAME');
+        map.data.addListener('click', function(event) {
+          var state_id = nameToId(event.feature.getProperty('NAME'));
+
+          // Make a query to get the data for the state
+          $.get("/statedata/"+state_id, function(popdata) {
+
+            var years = [];
+            var year_object;
+            var result;
+            var state_name;
+            var horses_population = [];
+            var burros_population = [];
+            var blm_acreage = [];
+            var other_acreage = [];
+
+            result=popdata;
+            state_name=result.StateName;
+            year_object=result.PopData;
+            years=Object.keys(year_object);
+
+            for (var i=0; i < years.length; i++) {
+                var year = years[i];
+                horses_population.push(year_object[year][0]);
+                burros_population.push(year_object[year][1]);
+                blm_acreage.push(year_object[year][2]);
+                other_acreage.push(year_object[year][3]);
+            }
+            var header = "Population of Horses and Burros in " + state_name +" Over Time" ;
+
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                }
+            });
+
+            Highcharts.chart('info-box', {
+                chart: {
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: header
+                },
+                subtitle: {
+                    text: "Source: BLM"
+                },
+                legend: {
+                    // layout: 'vertical',
+                    // align: 'left',
+                    // verticalAlign: 'top',
+                    // // x: 400,
+                    // y: 50,
+                    // floating: true,
+                    borderWidth: 0,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                },
+                xAxis: [{
+                    categories: years,
+                    crosshair: true
+                }],
+                    yAxis: [{ // Primary yAxis
+                    labels: {
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    },
+                    title: {
+                        text: 'Population',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    }
+                }, { // Secondary yAxis
+                    title: {
+                        text: 'Acreage',
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    },
+                    labels: {
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    },
+                    opposite: true
+                }],
+                tooltip: {
+                    shared: false
+                },
+                legend: {
+                    // layout: 'vertical',
+                    // align: 'left',
+                    // x: 120,
+                    // verticalAlign: 'top',
+                    // y: 100,
+                    // floating: true,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                },
+                series: [{
+                    name: 'BLM Acres',
+                    type: 'column',
+                    yAxis: 1,
+                    data: blm_acreage,
+                    tooltip: {
+                        valueSuffix: ' acres'
+                    }
+                }, {
+                    name: 'Other Acres',
+                    type: 'column',
+                    yAxis: 1,
+                    data: other_acreage,
+                    tooltip: {
+                        valueSuffix: ' acres'
+                    }
+                }, {
+                    name: 'Horse Population',
+                    type: 'spline',
+                    data: horses_population,
+                    tooltip: {
+                        valueSuffix: ' Horses'
+                    }
+                }, {
+                    name: 'Burro Population',
+                    type: 'spline',
+                    data: burros_population,
+                    tooltip: {
+                        valueSuffix: ' Burros'
+                    }
+
+                }]
+            });
+         });
+
+          // Create a new chart with the right target div id
+
+          // document.getElementById('info-box').textContent =
+          //     event.feature.getProperty('NAME');
         });
 
       }
@@ -119,7 +259,9 @@
     src="https://maps.googleapis.com/maps/api/js?key={{ secret_key }}&callback=initMap"
     async defer></script>
 
-    <div id="info-box"></div>
+    <div id="info-box" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+    <!-- <div id="info-box" class='container-fluid'></div> -->
 
     <div id="state_text" class="container-fluid">
     <h2>States</h2>
