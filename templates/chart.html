@@ -16,8 +16,10 @@
     <script>
     "use strict";
         var years = [];
+        var pop_years = []
         var year_object;
         var footnote_object;
+        var population_object;
         var footnote_list;
         var result;
         var header_start = "Adoptions and Removals in "
@@ -27,14 +29,18 @@
         var burros_adopted = [];
         var horses_removed = [];
         var burros_removed = [];
+        var horse_population = [];
+        var burro_population = [];
 
         $.get("/statedata/{{st}}", function(data) {
             result=data;
             state_name=result.StateName;
             year_object=result.StateData;
             years=Object.keys(year_object);
-            footnote_object=result.Footnotes
-            footnote_list=Object.keys(footnote_object)
+            footnote_object=result.Footnotes;
+            footnote_list=Object.keys(footnote_object);
+            population_object=result.PopData;
+            pop_years=Object.keys(population_object);
 
             for (var i=0; i < years.length; i++) {
                 var year = years[i];
@@ -43,6 +49,11 @@
                 horses_removed.push(year_object[year][2]);
                 burros_removed.push(year_object[year][3]);
             }
+            // for (var j=0; j <pop_years.length; j++) {
+            //     var pop_year = pop_years[j];
+            //     horse_population.push(population_object[pop_year][0]);
+            //     burro_population.push(population_object[pop_year][1]);
+            // }
             var header = header_start.concat(state_name, header_finish);
 
             Highcharts.setOptions({
@@ -109,6 +120,12 @@
                 }, {
                     name: 'Burros Removed',
                     data: burros_removed
+                // }, {
+                //     name: 'Horse Population',
+                //     data: horse_population
+                // }, {
+                //     name: 'Burros Population',
+                //     data: burro_population
                 }]
 
 

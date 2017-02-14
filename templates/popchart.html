@@ -2,7 +2,7 @@
 <html>
   <head>
     <script src="http://code.jquery.com/jquery.js"></script>
-    <title>State Chart</title>
+    <title>Pop Chart</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <style>
@@ -21,21 +21,21 @@
         var state_name;
         var horses_population = [];
         var burros_population = [];
-        var horses_removed = [];
-        var burros_removed = [];
+        var blm_acreage = [];
+        var other_acreage = [];
 
-        $.get("/populationdata/{{st}}", function(data) {
-            result=data;
+        $.get("/statedata/{{st}}", function(popdata) {
+            result=popdata;
             state_name=result.StateName;
-            year_object=result.StateData;
+            year_object=result.PopData;
             years=Object.keys(year_object);
 
             for (var i=0; i < years.length; i++) {
                 var year = years[i];
                 horses_population.push(year_object[year][0]);
                 burros_population.push(year_object[year][1]);
-                horses_removed.push(year_object[year][2]);
-                burros_removed.push(year_object[year][3]);
+                blm_acreage.push(year_object[year][2]);
+                other_acreage.push(year_object[year][3]);
             }
             var header = "Population of Horses and Burros in " + state_name +" Over Time" ;
 
@@ -47,7 +47,7 @@
 
             Highcharts.chart('container', {
                 chart: {
-                    type: 'areaspline'
+                    zoomType: 'xy'
                 },
                 title: {
                     text: header
@@ -65,45 +65,121 @@
                     borderWidth: 0,
                     backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
                 },
-                xAxis: {
+                xAxis: [{
                     categories: years,
-                },
-                yAxis: {
+                    crosshair: true
+                }],
+                    yAxis: [{ // Primary yAxis
+                    labels: {
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    },
                     title: {
-                        text: '# of horses or burros'
+                        text: 'Population',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
                     }
-                },
+                }, { // Secondary yAxis
+                    title: {
+                        text: 'Acreage',
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    },
+                    labels: {
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    },
+                    opposite: true
+                }],
                 tooltip: {
-                    shared: false,
-                    valueSuffix: ' '
+                    shared: false
                 },
-                credits: {
-                    enabled: false,
-                    text: "blm",
-                    href: 'https://www.blm.gov/wo/st/en/prog/whbprogram/herd_management/Data.html',
-                    position: {
-                        align: 'left',
-                        x: 20
-                    }
-                },
-                plotOptions: {
-                    areaspline: {
-                        fillOpacity: 0.5
-                    }
+                legend: {
+                    // layout: 'vertical',
+                    // align: 'left',
+                    // x: 120,
+                    // verticalAlign: 'top',
+                    // y: 100,
+                    // floating: true,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
                 },
                 series: [{
+                    name: 'BLM Acres',
+                    type: 'column',
+                    yAxis: 1,
+                    data: blm_acreage,
+                    tooltip: {
+                        valueSuffix: ' acres'
+                    }
+                }, {
+                    name: 'Other Acres',
+                    type: 'column',
+                    yAxis: 1,
+                    data: other_acreage,
+                    tooltip: {
+                        valueSuffix: ' acres'
+                    }
+                }, {
                     name: 'Horse Population',
-                    data: horses_population
+                    type: 'spline',
+                    data: horses_population,
+                    tooltip: {
+                        valueSuffix: ' Horses'
+                    }
                 }, {
                     name: 'Burro Population',
-                    data: burros_population
-                }, {
-                    name: 'BLM Acreage',
-                    data: horses_removed
-                }, {
-                    name: 'Other Acreage',
-                    data: burros_removed
+                    type: 'spline',
+                    data: burros_population,
+                    tooltip: {
+                        valueSuffix: ' Burros'
+                    }
+
                 }]
+
+            //     yAxis: {
+            //         title: {
+            //             text: '# of horses or burros'
+            //         }
+            //     }, { //Secondary yAxis
+            //         title: {
+            //             text: 'Population density'
+            //         }
+            //     },
+            //     tooltip: {
+            //         shared: false,
+            //         valueSuffix: ' '
+            //     },
+            //     credits: {
+            //         enabled: false,
+            //         text: "blm",
+            //         href: 'https://www.blm.gov/wo/st/en/prog/whbprogram/herd_management/Data.html',
+            //         position: {
+            //             align: 'left',
+            //             x: 20
+            //         }
+            //     },
+            //     plotOptions: {
+            //         areaspline: {
+            //             fillOpacity: 0.5
+            //         }
+            //     },
+            //     series: [{
+            //         name: 'Horse Population',
+            //         data: horses_population
+            //     }, {
+            //         name: 'Burro Population',
+            //         data: burros_population
+            //     // }, {
+            //     //     name: 'BLM Acreage',
+            //     //     data: horses_removed
+            //     // }, {
+            //     //     name: 'Other Acreage',
+            //     //     data: burros_removed
+            //     }]
 
 
             });

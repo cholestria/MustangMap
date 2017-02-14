@@ -8,6 +8,8 @@ from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
+from calculations import population_density
+
 
 app = Flask(__name__)
 
@@ -32,33 +34,6 @@ def states_dictionary():
             states_dict[i.state_id].append(i.year)
     return states_dict
 
-def state_by_year_info(st):
-    """Returns per year removal and adoption info for a state"""
-
-    all_years = StateData.query.filter(StateData.state_id==st).options(db.joinedload('state')).all()
-    state_name = all_years[0].state.name
-    state_dict = {}
-    footnote_dict = {}
-
-    for i in all_years:
-        horse_removals = i.horse_removals
-
-        if i.horse_removals is None:
-            horse_removals = 0
-            footnote_dict[(i.year)] = "no horse removal data was reported"
-
-        if i.year not in state_dict:
-            state_dict[(i.year)] = [i.horse_adoptions, i.burro_adoptions, horse_removals, i.burro_removals]
-
-    #creates a master dictionary that contains all information
-    master_state_dict = {"StateName": state_name,
-                "Footnotes": footnote_dict,
-                "StateData": state_dict,
-                }
-
-    return master_state_dict
-    #make json return each year's data as a dictionary instead of list
-
 def ha_data_by_state(st):
     """Returns a dictionary of population and acreage per HA within a state"""
 
@@ -73,35 +48,26 @@ def ha_data_by_state(st):
                 dictionary[i.herd_id][i.year] = i.dictionary_representation()
     return dictionary
 
-@app.route('/')
-def homepage():
-    """Homepage"""
+def state_by_year_info(st):
+    """Returns per year removal and adoption info for a state"""
 
-    states_dict = states_dictionary()
-
-    return render_template("googlemapshomepage.html",
-                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                            states=states_dict)
-
-
-@app.route('/statedata/<st>')
-def chart_per_state(st):
-    """Adoption and Removal Chart Per State"""
-
-    return jsonify(state_by_year_info(st))
-
-@app.route('/chart/<st>')
-def basic_chart(st):
-    """Chart of Adoptions and removals over time"""
-
-    return render_template("chart.html",
-                            st=st)
-
-@app.route('/populationdata/<st>')
-def populations_by_state(st):
-    """Returns JSON of state horse and burro population data"""
-
+    all_years = StateData.query.filter(StateData.state_id==st).options(db.joinedload('state')).all()
+    state_name = all_years[0].state.name
     all_herds = ha_data_by_state(st)
+
+    state_dict = {}
+    footnote_dict = {}
+    pop_dict = {}
+
+    for i in all_years:
+        horse_removals = i.horse_removals
+
+        if i.horse_removals is None:
+            horse_removals = 0
+            footnote_dict[(i.year)] = "no horse removal data was reported"
+
+        if i.year not in state_dict:
+            state_dict[(i.year)] = [i.horse_adoptions, i.burro_adoptions, horse_removals, i.burro_removals]
 
     def make_horse_pop_sum(year):
         horse_pop = []
@@ -127,17 +93,42 @@ def populations_by_state(st):
             other_acres.append(all_herds[str(herd)][year]['ha_other_acres'])
         return sum(other_acres)
 
-    pop_dict = {}
     for year in range(2015, 2017):
         if year not in pop_dict:
             pop_dict[year] = [make_horse_pop_sum(year), make_burro_pop_sum(year), make_blm_acreage_sum(year), make_other_acreage_sum(year)]
 
+    #creates a master dictionary that contains all information
+    master_state_dict = {"StateName": state_name,
+                "Footnotes": footnote_dict,
+                "StateData": state_dict,
+                "PopData": pop_dict,
+                }
 
-    master_pop_dict = {"StateName": State.query.filter_by(state_id=st).one().name,
-                        "StateData": pop_dict,
-                        }
+    return master_state_dict
 
-    return jsonify(master_pop_dict)
+@app.route('/')
+def homepage():
+    """Homepage"""
+
+    states_dict = states_dictionary()
+
+    return render_template("googlemapshomepage.html",
+                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
+                            states=states_dict)
+
+
+@app.route('/statedata/<st>')
+def chart_per_state(st):
+    """Adoption and Removal Chart Per State"""
+
+    return jsonify(state_by_year_info(st))
+
+@app.route('/chart/<st>')
+def basic_chart(st):
+    """Chart of Adoptions and removals over time"""
+
+    return render_template("chart.html",
+                            st=st)
 
 
 @app.route('/popchart/<st>')
@@ -145,9 +136,6 @@ def pop_chart_by_state(st):
 
     return render_template('popchart.html',
                             st=st)
-
-
-
 
 
 
