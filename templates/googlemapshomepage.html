@@ -46,18 +46,23 @@
     <div id="map"></div>
     <script>
 
-      // when given state name return state id?
-      function nameToId(name) {
-        if ( name == "California" ) {
-          return "CA"
-        }
-        else if ( name == "Nevada" ) {
-          return "NV"
-        }
-        else if (name == 'Oregon') {
-          return "OR"
-        }
-      }
+      // when given state name return state id
+      // function nameToId(name) {
+      //   if ( name == "California" ) {
+      //     return "CA"
+      //   }
+      //   else if ( name == "Nevada" ) {
+      //     return "NV"
+      //   }
+      //   else if (name == 'Oregon') {
+      //     return "OR"
+      //   }
+      // }
+
+    function nameToId(name) {
+      var name_dict = {'Arizona': 'AZ', 'California': 'CA', 'Colorado': 'CO', 'Eastern States': 'ES', 'Idaho': 'ID', 'Montana': 'MT', 'National Program': 'NAT', 'New Mexico': 'NM', 'Nevada': 'NV', 'Oregon': 'OR', 'Utah': 'UT', 'Wyoming': 'WY'};
+      return name_dict[name]
+    }
 
       function getCenter(feature) {
             var bounds = new google.maps.LatLngBounds();
