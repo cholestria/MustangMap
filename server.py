@@ -72,25 +72,37 @@ def state_by_year_info(st):
     def make_horse_pop_sum(year):
         horse_pop = []
         for herd in all_herds:
-            horse_pop.append(all_herds[str(herd)][year]['horse_population'])
+            try:
+                horse_pop.append(all_herds[str(herd)][year]['horse_population'])
+            except:
+                pass
         return sum(horse_pop)
 
     def make_burro_pop_sum(year):
         burro_pop = []
         for herd in all_herds:
-            burro_pop.append(all_herds[str(herd)][year]['burro_population'])
+            try:
+                burro_pop.append(all_herds[str(herd)][year]['burro_population'])
+            except:
+                pass
         return sum(burro_pop)
 
     def make_blm_acreage_sum(year):
         blm_acres = []
         for herd in all_herds:
-            blm_acres.append(all_herds[str(herd)][year]['ha_blm_acres'])
+            try:
+                blm_acres.append(all_herds[str(herd)][year]['ha_blm_acres'])
+            except:
+                pass
         return sum(blm_acres)
 
     def make_other_acreage_sum(year):
         other_acres = []
         for herd in all_herds:
-            other_acres.append(all_herds[str(herd)][year]['ha_other_acres'])
+            try:
+                other_acres.append(all_herds[str(herd)][year]['ha_other_acres'])
+            except:
+                pass
         return sum(other_acres)
 
     for year in range(2015, 2017):
