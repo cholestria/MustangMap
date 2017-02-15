@@ -70,17 +70,14 @@ def ha_data_for_ha_chart(herd_id):
 
     return master_ha_dict
 
-
 def state_by_year_info(st):
-    """Returns per year population, removal, and adoption info for a state"""
+    """Returns per year removal and adoption info for a state"""
 
     all_years = StateData.query.filter(StateData.state_id==st).options(db.joinedload('state')).all()
-    state_name = all_years[0].state.name
-    all_herds = ha_data_by_state(st)
+    # state_name = all_years[0].state.name
 
     state_dict = {}
     footnote_dict = {}
-    pop_dict = {}
 
     for i in all_years:
         horse_removals = i.horse_removals
@@ -91,6 +88,14 @@ def state_by_year_info(st):
 
         if i.year not in state_dict:
             state_dict[(i.year)] = [i.horse_adoptions, i.burro_adoptions, horse_removals, i.burro_removals]
+
+    return state_dict
+
+
+def state_pop_dict(st):
+    """Returns dictionary of state population and acreage sums from herd data"""
+    all_herds = ha_data_by_state(st)
+    pop_dict = {}
 
     def make_horse_pop_sum(year):
         horse_pop = []
@@ -132,8 +137,18 @@ def state_by_year_info(st):
         if year not in pop_dict:
             pop_dict[year] = [make_horse_pop_sum(year), make_burro_pop_sum(year), make_blm_acreage_sum(year), make_other_acreage_sum(year)]
 
+    return pop_dict
 
-    #creates a master dictionary that contains all information
+
+def master_state_dict(st):
+    """creates a master dictionary that contains all state information"""
+    all_years = StateData.query.filter(StateData.state_id==st).options(db.joinedload('state')).all()
+    state_name = all_years[0].state.name
+
+    pop_dict = state_pop_dict(st)
+    state_dict = state_by_year_info(st)
+    footnote_dict = {}  #emtpy for now
+
     master_state_dict = {"Name": state_name,
                 "Footnotes": footnote_dict,
                 "StateData": state_dict,
@@ -141,5 +156,3 @@ def state_by_year_info(st):
                 }
 
     return master_state_dict
-
-

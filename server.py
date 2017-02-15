@@ -8,7 +8,7 @@ from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
-from calculations import states_dictionary, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary
+from calculations import states_dictionary, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary, master_state_dict
 
 
 app = Flask(__name__)
@@ -54,7 +54,7 @@ def herd_area_data(herd_id):
 def chart_per_state(st):
     """Adoption and Removal Chart Per State"""
 
-    return jsonify(state_by_year_info(st))
+    return jsonify(master_state_dict(st))
 
 
 @app.route('/chart/<st>')
@@ -86,15 +86,15 @@ def state_map(state_id):
                             state_maps=state_maps)
 
 
-@app.route('/data/<st>/<yr>')
-def state_data_per_year(st, yr): #id must be combo of (year, state)
-    """Mustang Data Per year"""
+# @app.route('/data/<st>/<yr>')
+# def state_data_per_year(st, yr): #id must be combo of (year, state)
+#     """Mustang Data Per year"""
 
-    state_data_per_year = StateData.query.get((int(yr), st))
-    #example: StateData.query.get((2000,"CA"))
+#     state_data_per_year = StateData.query.get((int(yr), st))
+#     #example: StateData.query.get((2000,"CA"))
 
 
-    return jsonify(state_data_per_year.dictionary_representation())
+#     return jsonify(state_data_per_year.dictionary_representation())
 
 
 
