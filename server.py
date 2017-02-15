@@ -8,7 +8,7 @@ from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
-from calculations import states_dictionary, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart
+from calculations import states_dictionary, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary
 
 
 app = Flask(__name__)
@@ -28,10 +28,12 @@ def homepage():
     """Homepage"""
 
     states_dict = states_dictionary()
+    name_to_id = name_to_id_dictionary()
 
     return render_template("googlemapshomepage.html",
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                            states=states_dict)
+                            states=states_dict,
+                            name_to_id=name_to_id)
 
 @app.route('/hachart/<herd_id>')
 def herd_area_chart(herd_id):
@@ -82,6 +84,7 @@ def state_map(state_id):
                             state_id=state_id,
                             state_info=state_info,
                             state_maps=state_maps)
+
 
 @app.route('/data/<st>/<yr>')
 def state_data_per_year(st, yr): #id must be combo of (year, state)

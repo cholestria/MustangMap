@@ -54,6 +54,7 @@
           center: {lat: 40, lng: -115},
           draggable: false,
           zoomControl: false,
+          streetViewControl: false,
         });
 
         map.data.loadGeoJson('static/states.json');
@@ -99,8 +100,6 @@
 
           // Create a new chart with the right target div id
 
-          // document.getElementById('info-box').textContent =
-          //     event.feature.getProperty('NAME');
       }
 
 
@@ -110,8 +109,6 @@
     async defer></script>
 
     <div id="info-box" style="min-width: 310px; height: 200px; margin: 0 auto"></div>
-
-    <!-- <div id="info-box" class='container-fluid'></div> -->
 
     <div id="state_text" class="container-fluid">
     <h2>States</h2>

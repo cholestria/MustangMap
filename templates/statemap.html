@@ -54,6 +54,7 @@
           center: {lat: {{state_info.latitude}}, lng: {{state_info.longitude}}},
           draggable: false,
           zoomControl: false,
+          streetViewControl: false,
         });
         {% for each in state_maps %}
         map.data.loadGeoJson("{{url_for('static', filename=each.map_name)}}");

@@ -13,6 +13,17 @@ def states_dictionary():
             states_dict[i.state_id].append(i.year)
     return states_dict
 
+def name_to_id_dictionary():
+    """Makes Name to Id Dictionary"""
+
+    states = StateData.query.options(db.joinedload('state')).all()
+    states_dict = {}
+
+    for i in states:
+            states_dict[(i.state.name)] = [i.state_id]
+
+    return states_dict
+
 def ha_data_by_state(st):
     """Returns a dictionary of population and acreage per HA within a state"""
 

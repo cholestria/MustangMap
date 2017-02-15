@@ -24,7 +24,7 @@ function makePopulationChart(data_endpoint, div_id) {
         var years = [];
         var year_object;
         var result;
-        var name;
+        var name; //state or herd name
         var horses_population = [];
         var burros_population = [];
         var blm_acreage = [];
