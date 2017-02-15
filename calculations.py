@@ -52,7 +52,7 @@ def ha_data_for_ha_chart(herd_id):
         if i.year not in ha_pop_dict:
             ha_pop_dict[(i.year)] = [horse_population, burro_population, blm_acreage, other_acreage]
 
-    master_ha_dict = {"HerdName": herd_name,
+    master_ha_dict = {"Name": herd_name,
         "Footnotes": footnote_dict,
         "PopData": ha_pop_dict,
         }
@@ -123,7 +123,7 @@ def state_by_year_info(st):
 
 
     #creates a master dictionary that contains all information
-    master_state_dict = {"StateName": state_name,
+    master_state_dict = {"Name": state_name,
                 "Footnotes": footnote_dict,
                 "StateData": state_dict,
                 "PopData": pop_dict,

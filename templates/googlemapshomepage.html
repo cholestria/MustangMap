@@ -93,7 +93,7 @@
         // Set click event for each state feature.
         map.data.addListener('click', function(event) {
           var state_id = nameToId(event.feature.getProperty('NAME'));
-          makeStatePopulationChart(state_id, 'info-box')
+          makePopulationChart("/statedata/"+state_id, 'info-box')
 
         });
 

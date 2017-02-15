@@ -79,7 +79,7 @@
           if (!herd_id) {
             herd_id = event.feature.getProperty('HMA_ID');
           }
-          makeHerdAreaPopulationChart(herd_id, 'info-box');
+          makePopulationChart("/hachartdata/"+herd_id, 'info-box');
         });
 
         // When the user hovers, tempt them to click by outlining the letters.
