@@ -33,6 +33,15 @@
         margin-right: auto;
         text-align: center
       }
+      #info-box-2 {
+        height: 50px;
+        width: 600px;
+        outline: #666666 solid thin;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center
+      }
       /* Optional: Makes the sample page fill the window. */
       html, body {
         height: 100%;
@@ -55,6 +64,8 @@
           draggable: false,
           zoomControl: false,
           streetViewControl: false,
+          styles: [{"featureType":"all","elementType":"all","stylers":[{"hue":"#ffaa00"},{"saturation":"-33"},{"lightness":"10"}]},{"featureType":"administrative.locality","elementType":"labels.text.fill","stylers":[{"visibility":"off"}]},{"featureType":"landscape.natural.terrain","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.attraction","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.business","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"poi.government","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.place_of_worship","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"road.highway","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"transit.line","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"saturation":"-23"},{"gamma":"2.01"},{"color":"#f2f6f6"}]},{"featureType":"water","elementType":"geometry.stroke","stylers":[{"saturation":"-14"}]}]
+
         });
 
         map.data.loadGeoJson('static/states.json');
@@ -68,12 +79,12 @@
         // Set the fill color to purple when the feature is clicked.
         map.data.addListener('click', function(event) {
           map.data.overrideStyle(event.feature, {fillColor: 'purple'});
-          map.setZoom(5);
-          var center = getCenter(event.feature)
+          // map.setZoom(5);
+          var center = getCenter(event.feature);
           map.panTo(center)
         });
 
-        //need to get this working - doubleclick should open new map
+        // // need to get this working - doubleclick should open new map
         //   map.data.addListener('dblclick', function(event) {
         //   map.panTo(center)
         //   window.open("http://0.0.0.0:5000/map/"+nameToId(event.feature.getProperty('NAME')));
@@ -94,7 +105,8 @@
         // Set click event for each state feature.
         map.data.addListener('click', function(event) {
           var state_id = nameToId(event.feature.getProperty('NAME'));
-          makePopulationChart("/statedata/"+state_id, 'info-box')
+          makePopulationChart("/statedata/"+state_id, 'info-box');
+          makeAdoptionChart("/statedata/"+state_id, 'info-box-2');
 
         });
 
@@ -107,16 +119,10 @@
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ secret_key }}&callback=initMap"
     async defer></script>
-
+    <br>
     <div id="info-box" style="min-width: 310px; height: 200px; margin: 0 auto"></div>
-
-    <div id="state_text" class="container-fluid">
-    <h2>States</h2>
-      {% for state in states %}
-             <a href="/chart/{{state}}">{{states[state][0]}}</a><br>
-      {% endfor %}
-
-
+    <br>
+    <div id="info-box-2" style="min-width: 310px; height: 200px; margin: 0 auto"></div>
     </div>
   </body>
 </html>
