@@ -1,13 +1,13 @@
 state_id,state_name,lat,long,zoom
-AZ,Arizona,,,
-CA,California,,,
-CO,Colorado,,,
+AZ,Arizona,34.3,-111.5,7
+CA,California,37.3,-120,5
+CO,Colorado,39,-105.5,6
 ES,Eastern States,,,
-ID,Idaho,,,
-MT,Montana ,,,
+ID,Idaho,45,-114.4,6
+MT,Montana ,46.5,-109,6
 NV,Nevada,39.4,-116.5,6
-NM,New Mexico,,,
+NM,New Mexico,34.5,-106,7
 OR,Oregon ,43.5,-119.8,7
-UT,Utah,,,
-WY,Wyoming,,,
+UT,Utah,39.2,-111.3,7
+WY,Wyoming,43,-107.5,6
 NAT,National Program,,,
