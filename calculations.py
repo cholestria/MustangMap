@@ -202,6 +202,7 @@ def all_states_ar_data():
     master_dict = {"Name": "Nationwide",
                 "Footnotes": footnote_dict,
                 "StateData": state_dict,
+                "PopData": "Empty"
                 }
 
     return master_dict
