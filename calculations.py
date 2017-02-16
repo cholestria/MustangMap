@@ -178,11 +178,46 @@ def total_burro_removals_per_year(yr):
 
     return db.session.query(db.func.sum(StateData.burro_removals)).filter(StateData.year==yr).one()[0]
 
+
+def total_horse_population_per_year(yr):
+    """Returns a total of horse populations across all states for a year"""
+
+    return db.session.query(db.func.sum(HAData.horse_population)).filter(HAData.year==yr).one()[0]
+
+
+def total_burro_population_per_year(yr):
+    """Returns a total of horse populations across all states for a year"""
+
+    return db.session.query(db.func.sum(HAData.burro_population)).filter(HAData.year==yr).one()[0]
+
+def total_blm_acres_per_year(yr):
+    """Returns a total of horse populations across all states for a year"""
+
+    return db.session.query(db.func.sum(HAData.ha_blm_acres)).filter(HAData.year==yr).one()[0]
+
+def total_other_acres_per_year(yr):
+    """Returns a total of horse populations across all states for a year"""
+
+    return db.session.query(db.func.sum(HAData.ha_other_acres)).filter(HAData.year==yr).one()[0]
+
+
+def all_states_pop_data():
+    """Returns a dictionary of nationwide adoptions and removals"""
+
+    all_data = HAData.query.options(db.joinedload('herd_areas')).all()
+    pop_dict = {}
+
+    for i in all_data:
+        if i.year not in pop_dict:
+            pop_dict[i.year] = [total_horse_population_per_year(i.year), total_burro_population_per_year(i.year), total_blm_acres_per_year(i.year), total_other_acres_per_year(i.year)]
+
+
 def all_states_ar_data():
     """Returns a dictionary of nationwide adoptions and removals"""
 
     all_data = StateData.query.options(db.joinedload('state')).all()
-
+    all_pop_data = HAData.query.options(db.joinedload('herd_areas')).all()
+    pop_dict = {}
     state_dict = {}
     footnote_dict = {}
 
@@ -199,10 +234,14 @@ def all_states_ar_data():
         if i.year not in state_dict:
             state_dict[i.year] = [total_horse_adoptions_per_year(i.year), total_burro_adoptions_per_year(i.year), total_horse_removals_per_year(i.year), total_burro_removals_per_year(i.year)]
 
+    for i in all_pop_data:
+        if i.year not in pop_dict:
+            pop_dict[i.year] = [total_horse_population_per_year(i.year), total_burro_population_per_year(i.year), total_blm_acres_per_year(i.year), total_other_acres_per_year(i.year)]
+
     master_dict = {"Name": "Nationwide",
-                "Footnotes": footnote_dict,
-                "StateData": state_dict,
-                "PopData": "Empty"
-                }
+                    "Footnotes": footnote_dict,
+                    "StateData": state_dict,
+                    "PopData": pop_dict,
+                    }
 
     return master_dict

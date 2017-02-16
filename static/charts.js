@@ -42,7 +42,12 @@ function makePopulationChart(data_endpoint, div_id) {
             blm_acreage.push(year_object[year][2]);
             other_acreage.push(year_object[year][3]);
         }
-        var header = "Population of Horses and Burros in " + name + " Over Time" ;
+
+        if (name == "Nationwide") {
+            header = "Population and Acreage " + name + " Over Time";
+        } else {
+            header = "Population and Acreage in " + name + " Over Time";
+        }
 
         Highcharts.setOptions({
             lang: {
@@ -158,7 +163,8 @@ function makeAdoptionChart(data_endpoint, div_id) {
         var population_object;
         var footnote_list;
         var result;
-        var state_name;
+        var header;
+        var area_name;
         var horses_adopted = [];
         var burros_adopted = [];
         var horses_removed = [];
@@ -167,7 +173,7 @@ function makeAdoptionChart(data_endpoint, div_id) {
         var burro_population = [];
 
         result=data;
-        state_name=result.Name;
+        area_name=result.Name;
         year_object=result.StateData;
         years=Object.keys(year_object);
         footnote_object=result.Footnotes;
@@ -183,7 +189,11 @@ function makeAdoptionChart(data_endpoint, div_id) {
             burros_removed.push(year_object[year][3]);
         }
 
-        var header = "Adoptions and Removals in " + state_name + " Over Time";
+        if (area_name == "Nationwide") {
+            header = "Adoptions and Removals " + area_name + " Over Time";
+        } else {
+            header = "Adoptions and Removals in " + area_name + " Over Time";
+        }
 
         Highcharts.setOptions({
             lang: {

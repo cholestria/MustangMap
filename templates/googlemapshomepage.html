@@ -42,6 +42,16 @@
         margin-right: auto;
         text-align: center
       }
+      #button-div {
+        height: 50px;
+        width: 600px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      #nationwide {
+        margin: 0 auto;
+      }
       /* Optional: Makes the sample page fill the window. */
       html, body {
         height: 100%;
@@ -62,6 +72,7 @@
           zoom: 4,
           center: {lat: 40, lng: -115},
           draggable: false,
+          scrollwheel: false,
           zoomControl: false,
           streetViewControl: false,
           styles: [{"featureType":"all","elementType":"all","stylers":[{"hue":"#ffaa00"},{"saturation":"-33"},{"lightness":"10"}]},{"featureType":"administrative.locality","elementType":"labels.text.fill","stylers":[{"visibility":"off"}]},{"featureType":"landscape.natural.terrain","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.attraction","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.business","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"poi.government","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.place_of_worship","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"road.highway","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"transit.line","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"saturation":"-23"},{"gamma":"2.01"},{"color":"#f2f6f6"}]},{"featureType":"water","elementType":"geometry.stroke","stylers":[{"saturation":"-14"}]}]
@@ -118,12 +129,15 @@
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ secret_key }}&callback=initMap"
     async defer></script>
-    <br>
-    <button onclick="myFunction()">Click me</button>
+    <br><div id="button-div">
+    <button id="nationwide" onclick="myFunction()">Show Nationwide Information</button>
+    </div>
     <script>
     function myFunction() {
+        makePopulationChart("/totaldata", 'info-box');
         makeAdoptionChart("/totaldata", 'info-box-2');
       }
+
     </script>
     <br>
     <div id="info-box" style="min-width: 310px; height: 200px; margin: 0 auto"></div>
