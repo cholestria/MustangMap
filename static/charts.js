@@ -228,6 +228,7 @@ function makeAdoptionChart(data_endpoint, div_id) {
                 enabled: false
               }
             },
+
             credits: {
                 enabled: true,
                 text: footnote_list,

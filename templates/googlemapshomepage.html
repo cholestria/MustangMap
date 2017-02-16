@@ -114,11 +114,17 @@
 
       }
 
-
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ secret_key }}&callback=initMap"
     async defer></script>
+    <br>
+    <button onclick="myFunction()">Click me</button>
+    <script>
+    function myFunction() {
+        makeAdoptionChart("/statedata/"+state_id, 'info-box-2');
+      }
+    </script>
     <br>
     <div id="info-box" style="min-width: 310px; height: 200px; margin: 0 auto"></div>
     <br>

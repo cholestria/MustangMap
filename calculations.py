@@ -74,7 +74,6 @@ def state_by_year_info(st):
     """Returns per year removal and adoption info for a state"""
 
     all_years = StateData.query.filter(StateData.state_id==st).options(db.joinedload('state')).all()
-    # state_name = all_years[0].state.name
 
     state_dict = {}
     footnote_dict = {}
@@ -156,3 +155,53 @@ def master_state_dict(st):
                 }
 
     return master_state_dict
+
+
+def total_horse_adoptions_per_year(yr):
+    """Returns a total of horse adoptions across all states for year"""
+
+    return db.session.query(db.func.sum(StateData.horse_adoptions)).filter(StateData.year==yr).one()[0]
+
+def total_burro_adoptions_per_year(yr):
+    """Returns a total of burro adoptions across all states for year"""
+
+    return db.session.query(db.func.sum(StateData.burro_adoptions)).filter(StateData.year==yr).one()[0]
+
+def total_horse_removals_per_year(yr):
+    """Returns a total of horse removals across all states for year"""
+
+    return db.session.query(db.func.sum(StateData.horse_removals)).filter(StateData.year==yr).one()[0]
+
+
+def total_burro_removals_per_year(yr):
+    """Returns a total of burro removals across all states for year"""
+
+    return db.session.query(db.func.sum(StateData.burro_removals)).filter(StateData.year==yr).one()[0]
+
+def all_states_ar_data():
+    """Returns a dictionary of nationwide adoptions and removals"""
+
+    all_data = StateData.query.options(db.joinedload('state')).all()
+
+    state_dict = {}
+    footnote_dict = {}
+
+    for i in all_data:
+        horse_removals = i.horse_removals
+        burro_removals = i.burro_removals
+        if i.horse_removals is None:
+            horse_removals = 0
+            footnote_dict[(i.year)] = "no horse removal data was reported for this year"
+        if i.burro_removals is None:
+            burro_removals = 0
+            footnote_dict[(i.year)] = "no burro removal data was reported for this year"
+
+        if i.year not in state_dict:
+            state_dict[i.year] = [total_horse_adoptions_per_year(i.year), total_burro_adoptions_per_year(i.year), total_horse_removals_per_year(i.year), total_burro_removals_per_year(i.year)]
+
+    master_dict = {"Name": "Nationwide",
+                "Footnotes": footnote_dict,
+                "StateData": state_dict,
+                }
+
+    return master_dict
