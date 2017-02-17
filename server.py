@@ -9,7 +9,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
 from calculations import states_dictionary, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary, master_state_dict
-from calculations import all_states_ar_data
+from calculations import nationwide_pop_ar_totals, state_comparison
 
 app = Flask(__name__)
 
@@ -57,11 +57,18 @@ def chart_per_state(st):
     return jsonify(master_state_dict(st))
 
 
+@app.route('/popbyyear/<yr>')
+def populations_by_year(yr):
+    """Populations of All States by Year"""
+
+    return jsonify(state_comparison(yr))
+
+
 @app.route('/totaldata')
 def total_data():
     """Adoption and Removal Chart totaled"""
 
-    return jsonify(all_states_ar_data())
+    return jsonify(nationwide_pop_ar_totals())
 
 
 @app.route('/chart/<st>')

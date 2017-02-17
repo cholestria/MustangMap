@@ -43,7 +43,7 @@
         text-align: center
       }
       #button-div {
-        height: 50px;
+        height: 25px;
         width: 600px;
         display: block;
         margin-left: auto;
@@ -120,10 +120,9 @@
           makeAdoptionChart("/statedata/"+state_id, 'info-box-2');
 
         });
-
-          // Create a new chart with the right target div id
-
       }
+
+
 
     </script>
     <script async defer
@@ -136,6 +135,7 @@
     function myFunction() {
         makePopulationChart("/totaldata", 'info-box');
         makeAdoptionChart("/totaldata", 'info-box-2');
+        map.panTo({lat: 40, lng: -115});
       }
 
     </script>
