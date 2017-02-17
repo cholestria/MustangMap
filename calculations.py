@@ -257,6 +257,19 @@ def nationwide_pop_ar_totals():
     return master_dict
 
 
+def all_herds_dictionary():
+    all_herds = HerdArea.query.options(db.joinedload('state')).all()
+    herd_dict = {}
+
+    for herd in all_herds:
+        if herd.state.name not in herd_dict:
+            herd_dict[herd.state.name] = [i.herd_name]
+        else:
+            herd_dict[herd.state.name].append(herd.herd_name)
+
+    return herd_dict
+
+
 def all_years_state_comparison():
     """Returns all population data for all years and all states"""
 

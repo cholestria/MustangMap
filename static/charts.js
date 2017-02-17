@@ -16,6 +16,25 @@ function getCenter(feature) {
   return bounds.getCenter();
 }
 
+function colorMap(year) {
+var that_year = pop_data[year];
+map.data.forEach(function(feature) {
+  var state_id = nameToId(feature.getProperty('NAME'));
+  var population_data = that_year[state_id];
+  var horse_pop = population_data["horse"];
+  var burro_pop = population_data["burro"];
+  var sum_pop = horse_pop + burro_pop;
+  if (sum_pop > 10000) {
+    map.data.overrideStyle(feature, {fillColor: 'red'});
+  } else if (sum_pop > 5000) {
+    map.data.overrideStyle(feature, {fillColor: 'orange'});
+  } else if (sum_pop > 2000) {
+    map.data.overrideStyle(feature, {fillColor: 'yellow'});
+  } else {
+    map.data.overrideStyle(feature, {fillColor: 'green'});
+  }
+});
+}
 
 function makePopulationChart(data_endpoint, div_id) {
     // Make a AJAX call to get the json data for the state
