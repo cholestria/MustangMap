@@ -16,6 +16,13 @@ function getCenter(feature) {
   return bounds.getCenter();
 }
 
+function nationalInfo() {
+    makePopulationChart("/totaldata", 'info-box');
+    makeAdoptionChart("/totaldata", 'info-box-2');
+    map.panTo({lat: 40, lng: -115});
+    colorMap(2015);
+}
+
 function colorMap(year) {
 var that_year = pop_data[year];
 map.data.forEach(function(feature) {

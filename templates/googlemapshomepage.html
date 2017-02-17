@@ -3,6 +3,8 @@
   <head>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="{{url_for('static', filename='charts.js')}}"></script>
+    <script src="{{url_for('static', filename='maps.js')}}"></script>
+    <link href="maps.css" rel="stylesheet">
 
     <title>All States Map</title>
     <meta name="viewport" content="initial-scale=1.0">
@@ -52,12 +54,7 @@
       #nationwide {
         margin: 0 auto;
       }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
+
     </style>
   </head>
   <body>
@@ -70,62 +67,6 @@
       var year = 2015;
 
       var map;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: {lat: 40, lng: -115},
-          draggable: false,
-          scrollwheel: false,
-          zoomControl: false,
-          streetViewControl: false,
-          styles: [{"featureType":"all","elementType":"all","stylers":[{"hue":"#ffaa00"},{"saturation":"-33"},{"lightness":"10"}]},{"featureType":"administrative.locality","elementType":"labels.text.fill","stylers":[{"visibility":"off"}]},{"featureType":"landscape.natural.terrain","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.attraction","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.business","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"poi.government","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.place_of_worship","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"road.highway","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"transit.line","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"saturation":"-23"},{"gamma":"2.01"},{"color":"#f2f6f6"}]},{"featureType":"water","elementType":"geometry.stroke","stylers":[{"saturation":"-14"}]}]
-
-        });
-
-        map.data.loadGeoJson('static/states.json');
-
-        // Set the stroke width, and fill color for each polygon
-        map.data.setStyle({
-          fillColor: 'blue',
-          strokeWeight: 1
-        });
-
-        // Set the fill color to purple when the feature is clicked.
-        map.data.addListener('click', function(event) {
-          map.data.overrideStyle(event.feature, {fillColor: 'purple'});
-          // map.setZoom(5);
-          var center = getCenter(event.feature);
-          map.panTo(center)
-        });
-
-        // // need to get this working - doubleclick should open new map
-        //   map.data.addListener('dblclick', function(event) {
-        //   map.panTo(center)
-        //   window.open("http://0.0.0.0:5000/map/"+nameToId(event.feature.getProperty('NAME')));
-        // });
-
-        // When the user hovers, tempt them to click by outlining the letters.
-        // Call revertStyle() to remove all overrides. This will use the style rules
-        // defined in the function passed to setStyle()
-        map.data.addListener('mouseover', function(event) {
-          map.data.revertStyle();
-          map.data.overrideStyle(event.feature, {strokeWeight: 3});
-        });
-
-        map.data.addListener('mouseout', function(event) {
-          // map.data.revertStyle();
-          map.data.overrideStyle(event.feature, {strokeWeight: 1});
-        });
-
-        // Set click event for each state feature.
-        map.data.addListener('click', function(event) {
-          var state_id = nameToId(event.feature.getProperty('NAME'));
-          makePopulationChart("/statedata/"+state_id, 'info-box');
-          makeAdoptionChart("/statedata/"+state_id, 'info-box-2');
-
-        });
-      }
-
 
 
     </script>
@@ -133,17 +74,8 @@
     src="https://maps.googleapis.com/maps/api/js?key={{ secret_key }}&callback=initMap"
     async defer></script>
     <br><div id="button-div">
-    <button id="nationwide" onclick="myFunction()">Show Nationwide Information</button>
+    <button id="nationwide" onclick="nationalInfo()">Show Nationwide Information</button>
     </div>
-    <script>
-    function myFunction() {
-        makePopulationChart("/totaldata", 'info-box');
-        makeAdoptionChart("/totaldata", 'info-box-2');
-        map.panTo({lat: 40, lng: -115});
-        colorMap(2015);
-      }
-
-    </script>
     <br>
     <div id="info-box" style="min-width: 310px; height: 200px; margin: 0 auto"></div>
     <br>
