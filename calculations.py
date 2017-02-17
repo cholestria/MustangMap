@@ -256,27 +256,6 @@ def nationwide_pop_ar_totals():
 
     return master_dict
 
-# def total_burro_pop_by_year_and_state(yr, st):
-#     """Returns the total population of burros per year per state"""
-
-#     return db.session.query(db.func.sum(HAData.burro_population)).filter(HAData.year==yr, HAData.herd_id.like(st+'%')).one()[0]
-
-# def total_horse_pop_by_year_and_state(yr, st):
-#     """Returns the total population of horses per year per state"""
-
-#     return db.session.query(db.func.sum(HAData.horse_population)).filter(HAData.year==yr, HAData.herd_id.like(st+'%')).one()[0]
-
-# def state_comparison(yr):
-#     """Returns data comparing state populations to each other"""
-
-#     pop_data_per_year = HAData.query.options(db.joinedload('herd_areas')).filter(HAData.year==yr).all()
-#     pop_dict = {}
-#     for i in pop_data_per_year:
-#         if i.herd_areas.state_id not in pop_dict:
-#             pop_dict[id_to_name(i.herd_areas.state_id)] = {"horse": total_horse_pop_by_year_and_state(yr, i.herd_areas.state_id),
-#                                                             "burro": total_burro_pop_by_year_and_state(yr, i.herd_areas.state_id)}
-
-#     return pop_dict
 
 def all_years_state_comparison():
     """Returns all population data for all years and all states"""

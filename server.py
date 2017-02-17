@@ -10,7 +10,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
 from calculations import states_dictionary, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary, master_state_dict
-from calculations import nationwide_pop_ar_totals, state_comparison, all_years_state_comparison
+from calculations import nationwide_pop_ar_totals, all_years_state_comparison
 
 app = Flask(__name__)
 
@@ -31,10 +31,7 @@ def homepage():
     states_dict = states_dictionary()
     name_to_id = name_to_id_dictionary()
     all_pop_dict = all_years_state_comparison()
-    print "Got all pop data: " + str(all_pop_dict)
     all_pop = json.dumps(all_pop_dict)
-    print "JSONify'd: " + all_pop
-
 
     return render_template("googlemapshomepage.html",
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
@@ -68,7 +65,7 @@ def chart_per_state(st):
 def populations_by_year(yr):
     """Populations of All States by Year"""
 
-    return jsonify(state_comparison(yr))
+    return jsonify(all_years_state_comparison())
 
 
 @app.route('/totaldata')
