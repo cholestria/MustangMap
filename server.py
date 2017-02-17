@@ -1,5 +1,6 @@
 """Mustang Data."""
 import os
+import json
 
 from jinja2 import StrictUndefined
 
@@ -9,7 +10,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
 from calculations import states_dictionary, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary, master_state_dict
-from calculations import nationwide_pop_ar_totals, state_comparison
+from calculations import nationwide_pop_ar_totals, state_comparison, all_years_state_comparison
 
 app = Flask(__name__)
 
@@ -29,11 +30,17 @@ def homepage():
 
     states_dict = states_dictionary()
     name_to_id = name_to_id_dictionary()
+    all_pop_dict = all_years_state_comparison()
+    print "Got all pop data: " + str(all_pop_dict)
+    all_pop = json.dumps(all_pop_dict)
+    print "JSONify'd: " + all_pop
+
 
     return render_template("googlemapshomepage.html",
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
                             states=states_dict,
-                            name_to_id=name_to_id)
+                            name_to_id=name_to_id,
+                            all_pop=all_pop)
 
 @app.route('/hachart/<herd_id>')
 def herd_area_chart(herd_id):
