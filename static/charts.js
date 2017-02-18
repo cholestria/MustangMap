@@ -16,6 +16,11 @@ function getCenter(feature) {
   return bounds.getCenter();
 }
 
+function pageLoad() {
+    makePopulationChart("/totaldata", 'info-box');
+    makeAdoptionChart("/totaldata", 'info-box-2');
+}
+
 function nationalInfo() {
     makePopulationChart("/totaldata", 'info-box');
     makeAdoptionChart("/totaldata", 'info-box-2');

@@ -1,3 +1,5 @@
+var clickHandler = function(event) {};
+
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 4,
@@ -10,8 +12,6 @@ function initMap() {
 
   });
 
-  map.data.loadGeoJson('static/states.json');
-
   // Set the stroke width, and fill color for each polygon
   map.data.setStyle({
     fillColor: 'blue',
@@ -23,7 +23,7 @@ function initMap() {
     map.data.overrideStyle(event.feature, {fillColor: 'purple'});
     // map.setZoom(5);
     var center = getCenter(event.feature);
-    map.panTo(center)
+    map.panTo(center);
   });
 
 
@@ -41,10 +41,52 @@ function initMap() {
   });
 
   // Set click event for each state feature.
-  map.data.addListener('click', function(event) {
+  map.data.addListener('click', function(event){
+    clickHandler(event);
+  });
+  loadNationalFeatures();
+  // loadStateFeatures('OR', ['static/oregon_ha.geojson', 'static/oregon_hma.geojson'], {lat: 43.5, lng: -119.8}, 7);
+}
+
+function loadNationalFeatures() {
+
+  map.data.forEach( function(feature) {
+    map.data.remove(feature);
+  });
+
+  map.setZoom(4);
+  map.setCenter({lat: 40, lng: -115});
+
+  map.data.loadGeoJson('static/states.json');
+
+  clickHandler = function(event) {
     var state_id = nameToId(event.feature.getProperty('NAME'));
     makePopulationChart("/statedata/"+state_id, 'info-box');
     makeAdoptionChart("/statedata/"+state_id, 'info-box-2');
-
-  });
+  };
 }
+
+function loadStateFeatures(state_id, file_names, center, zoom) {
+
+  map.data.forEach( function(feature) {
+    map.data.remove(feature);
+  });
+
+  for (i=0; i < file_names.length; i++) {
+      map.data.loadGeoJson(file_names[i]);
+  }
+  map.setZoom(zoom);
+  map.setCenter(center);
+
+  clickHandler = function(event) {
+    var herd_id = event.feature.getProperty('HA_NO');
+    if (!herd_id) {
+      herd_id = event.feature.getProperty('HMA_ID');
+    }
+    makePopulationChart("/hachartdata/"+herd_id, 'info-box-2');
+  };
+
+
+}
+
+

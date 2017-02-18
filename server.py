@@ -39,7 +39,7 @@ def homepage():
                             name_to_id=name_to_id,
                             all_pop=all_pop)
 
-@app.route('/new')
+@app.route('/map')
 def newhomepage():
     """Homepage"""
 
@@ -110,6 +110,8 @@ def pop_chart_by_state(st):
 def state_map(state_id):
     """State map"""
 
+    states_dict = states_dictionary()
+
     state_maps = StateMapNames.query.filter(StateMapNames.state_id==state_id).all()
     state_info = State.query.filter(State.state_id==state_id).one()
 
@@ -117,19 +119,8 @@ def state_map(state_id):
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
                             state_id=state_id,
                             state_info=state_info,
-                            state_maps=state_maps)
-
-
-# @app.route('/data/<st>/<yr>')
-# def state_data_per_year(st, yr): #id must be combo of (year, state)
-#     """Mustang Data Per year"""
-
-#     state_data_per_year = StateData.query.get((int(yr), st))
-#     #example: StateData.query.get((2000,"CA"))
-
-
-#     return jsonify(state_data_per_year.dictionary_representation())
-
+                            state_maps=state_maps,
+                            states=states_dict)
 
 
 if __name__ == "__main__":
