@@ -4,12 +4,12 @@ import json
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, url_for
 from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
-from calculations import states_dictionary, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary, master_state_dict
+from calculations import all_state_list, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary, master_state_dict
 from calculations import nationwide_pop_ar_totals, all_years_state_comparison, all_herds_dictionary
 
 app = Flask(__name__)
@@ -28,7 +28,7 @@ app.jinja_env.undefined = StrictUndefined
 def homepage():
     """Homepage"""
 
-    states_dict = states_dictionary()
+    states_dict = all_state_list()
     name_to_id = name_to_id_dictionary()
     all_pop_dict = all_years_state_comparison()
     all_pop = json.dumps(all_pop_dict)
@@ -43,14 +43,16 @@ def homepage():
 def newhomepage():
     """Homepage"""
 
-    states_dict = states_dictionary()
+    states_list = all_state_list()
+    for state in states_list:
+        state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
     name_to_id = name_to_id_dictionary()
     all_pop_dict = all_years_state_comparison()
     all_pop = json.dumps(all_pop_dict)
 
     return render_template("homepage.html",
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                            states=states_dict,
+                            states=states_list,
                             name_to_id=name_to_id,
                             all_pop=all_pop)
 

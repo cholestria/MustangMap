@@ -1,17 +1,19 @@
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
 
-def states_dictionary():
-    """Makes States Dictionary"""
+def all_state_list():
+    """Makes States List"""
 
-    states = StateData.query.options(db.joinedload('state')).all()
-    states_dict = {}
+    states = State.query.all()
+    states_list = []
 
     for i in states:
-        if i.state_id not in states_dict:
-            states_dict[(i.state_id)] = [i.state.name]
-        else:
-            states_dict[i.state_id].append(i.year)
-    return states_dict
+        state_dict = i.dictionary_representation()
+        map_objects = StateMapNames.query.filter(StateMapNames.state_id==i.state_id).all()
+        file_names = [each.map_name for each in map_objects]
+        state_dict["file_names"] = file_names
+        states_list.append(state_dict)
+
+    return states_list
 
 def name_to_id_dictionary():
     """Makes Name to Id Dictionary"""

@@ -43,15 +43,15 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View States<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 {% for state in states %}
-                    {% if (states[state][0] != "National Program" and states[state][0] != "Eastern States") %}
-                <li><a onclick" ">{{states[state][0]}}</a></li>
+                    {% if (state.name != "National Program" and state.name != "Eastern States") %}
+                <li><a onclick="loadStateFeatures('{{state.state_id}}', ['{{ ("', '".join(state.file_names))|safe }}'], {lat: {{state.latitude}}, lng: {{state.longitude}} }, {{state.zoom}})">{{state.name}}</a></li>
                     {% endif %}
                 {% endfor %}
                 <li role="separator" class="divider"></li>
                 <li class="dropdown-header">Non State Zones</li>
                 {% for state in states %}
-                    {% if (states[state][0] == "National Program" or states[state][0] == "Eastern States") %}
-                <li><a href="/map/{{state}}">{{states[state][0]}}</a></li>
+                    {% if (state.name == "National Program" or state.name == "Eastern States") %}
+                <li><a onclick ="loadStateFeatures()">{{state.name}}</a></li>
                     {% endif %}
                 {% endfor %}
               </ul>
@@ -100,7 +100,7 @@
         <div id="state-links" class="col-lg-12">
             <h4> View State Data</h4><br>
           {% for state in states %}
-            <a class="btn btn-sm btn-success" role="button" <a href="/map/{{state}}">{{states[state][0]}}</a>
+            <a class="btn btn-sm btn-success" role="button" <a href="/map/{{state}}">{{state}}</a>
           {% endfor %}
     </div> <!-- /container -->
 
