@@ -71,6 +71,19 @@ def herd_area_data(herd_id):
 
     return jsonify(ha_data_for_ha_chart(herd_id))
 
+@app.route('/herdsearch')
+def herd_search():
+    """Herd List and Search page"""
+
+    herds= [each.dictionary_representation() for each in HerdArea.query.all()]
+    states_list = all_state_list()
+    for state in states_list:
+        state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
+
+    return render_template("herdsearch.html",
+                            herds=herds,
+                            states=states_list)
+
 
 @app.route('/statedata/<st>')
 def chart_per_state(st):

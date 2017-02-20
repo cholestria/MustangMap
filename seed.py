@@ -100,7 +100,7 @@ def load_herd_area_data():
     # AreaData.query.delete()  # deletes rows before adding so that data is not duplicated
 
     #loops through all csv files and imports them
-    for year in range(2014, 2017):
+    for year in range(2013, 2017):
         csvfile = open("csvs/"+str(year)+".csv")
         data = csv.reader(csvfile)
         next(data, None)  #skip the header row
@@ -135,7 +135,7 @@ def load_herd_area_data():
                 db.session.add(herd_info)
                 db.session.add(hma_info)
             except Exception as detail:
-                print "failed to insert" + row + detail
+                print "failed to insert" + str(row) + str(detail)
         db.session.commit()
 
 if __name__ == "__main__":

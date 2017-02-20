@@ -15,6 +15,12 @@ def all_state_list():
 
     return states_list
 
+def all_herds_list():
+    """Makes Herd Areas List"""
+
+    return [each.dictionary_representation() for each in HerdArea.query.all()]
+
+
 def name_to_id_dictionary():
     """Makes Name to Id Dictionary"""
 

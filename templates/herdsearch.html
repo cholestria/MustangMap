@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Herd Area Search{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+    </style>
+{% endblock %}
+{% block content %}
+    <h1>Herd Areas</h1>
+<div class="container-fluid">
+<div class="list-group">
+      {% for state in states %}
+        {% if (state.name != "National Program" and state.name != "Eastern States") %}
+    <a href="#" class="list-group-item list-group-item-action  list-group-item-info">
+      <h4 class="list-group-item-heading">{{state.name}}</h4>
+      <p class="list-group-item-text">Add some information here later.</p>
+    </a>
+        {% endif %}
+        {% for herd in herds %}
+            {% if (herd.state_id == state.state_id) %}
+        <button type="button" class="list-group-item list-group-item-action">{{herd.herd_name}}</button>
+            {% endif %}
+        {% endfor %}
+      {% endfor %}
+</div>
+
+</div>
+</div>
+</body>
+{% endblock %}
