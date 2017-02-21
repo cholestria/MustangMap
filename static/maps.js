@@ -44,7 +44,6 @@ function initMap() {
   map.data.addListener('click', function(event){
     clickHandler(event);
   });
-  loadNationalFeatures();
   // loadStateFeatures('OR', ['static/oregon_ha.geojson', 'static/oregon_hma.geojson'], {lat: 43.5, lng: -119.8}, 7);
 }
 

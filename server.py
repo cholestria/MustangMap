@@ -49,12 +49,14 @@ def newhomepage():
     name_to_id = name_to_id_dictionary()
     all_pop_dict = all_years_state_comparison()
     all_pop = json.dumps(all_pop_dict)
+    states_dict = json.dumps(states_list)
 
     return render_template("homepage.html",
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
                             states=states_list,
                             name_to_id=name_to_id,
-                            all_pop=all_pop)
+                            all_pop=all_pop,
+                            states_dict=states_dict)
 
 
 @app.route('/hachart/<herd_id>')

@@ -2,13 +2,18 @@
 {% block title %}Herd Area Search{% endblock %}
 {% block head %}
     {{ super() }}
+
     <style type="text/css">
     </style>
 {% endblock %}
 {% block content %}
-    <h1>Herd Areas</h1>
-<div class="container-fluid">
-<div class="list-group">
+
+<div id="searchable-container" class="container-fluid">
+    <div class="input-group input-group-lg">
+  <span class="input-group-addon glyphicon glyphicon-search" id="sizing-addon1" aria-hidden="true"></span>
+  <input type="text" id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search for a herd area" aria-describedby="sizing-addon1">
+</div>
+<div id="list-group">
       {% for state in states %}
         {% if (state.name != "National Program" and state.name != "Eastern States") %}
     <a href="#" class="list-group-item list-group-item-action  list-group-item-info">
@@ -16,14 +21,33 @@
       <p class="list-group-item-text">Add some information here later.</p>
     </a>
         {% endif %}
-        {% for herd in herds %}
-            {% if (herd.state_id == state.state_id) %}
-        <button type="button" class="list-group-item list-group-item-action">{{herd.herd_name}}</button>
-            {% endif %}
-        {% endfor %}
+        {% for herd in herds %}{% if (herd.state_id == state.state_id) %}
+        <a href="/map?state={{herd.state_id}}&herd={{herd.herd_id|safe}}" class="list-group-item list-group-item-action searchable-item">{{herd.herd_name}}</a>
+        {% endif %}{% endfor %}
       {% endfor %}
 </div>
+    <script>
 
+function myFunction() {
+    // Declare variables
+    var input, filter, group, anchor_list, a, i;
+    input = document.getElementById('myInput');
+    filter = input.value.toUpperCase();
+    group = document.getElementById("list-group");
+    anchor_list = group.getElementsByTagName("a");
+
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < anchor_list.length; i++) {
+        a = anchor_list[i];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            anchor_list[i].style.display = "";
+        } else {
+            anchor_list[i].style.display = "none";
+        }
+    };
+};
+</script>
 </div>
 </div>
 </body>

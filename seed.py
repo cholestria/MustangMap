@@ -100,27 +100,29 @@ def load_herd_area_data():
     # AreaData.query.delete()  # deletes rows before adding so that data is not duplicated
 
     #loops through all csv files and imports them
-    for year in range(2013, 2017):
+    for year in range(2010, 2017):
         csvfile = open("csvs/"+str(year)+".csv")
         data = csv.reader(csvfile)
         next(data, None)  #skip the header row
 
+
         for row in data:
             try:
+
                 row = [element if len(element) > 0 else None for element in row]
                 if row[15] is not None:
-                    last_gather = datetime.strptime(row[15], '%B %Y')
+                    row[15] = datetime.strptime(row[15], '%B %Y')
                 if row[14] is not None:
-                    inventory = datetime.strptime(row[14], '%B %Y')
+                    row[14] = datetime.strptime(row[14], '%B %Y')
                 if row[16] is not None:
-                    most_recent_aml = datetime.strptime(row[16], '%Y')
+                    row[16] = datetime.strptime(row[16], '%Y')
                 herd_info = HAData(herd_id=row[1],
                                     year=year,
                                     ha_blm_acres=row[2],
                                     ha_other_acres=row[3],
                                     horse_population=row[8],
                                     burro_population=row[12],
-                                    last_gather=last_gather)
+                                    last_gather=row[15])
                 hma_info = HMAData(herd_id=row[1],
                                     year=year,
                                     hma_blm_acres=row[4],
@@ -129,8 +131,8 @@ def load_herd_area_data():
                                     horse_aml_high=row[7],
                                     burro_aml_low=row[10],
                                     burro_aml_high=row[11],
-                                    recent_count=inventory,
-                                    most_recent_aml=most_recent_aml
+                                    recent_count=row[14],
+                                    most_recent_aml=row[16]
                                     )
                 db.session.add(herd_info)
                 db.session.add(hma_info)

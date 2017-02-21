@@ -150,7 +150,7 @@ def state_pop_dict(st):
                 pass
         return sum(other_acres)
 
-    for year in range(2014, 2017):
+    for year in range(2011, 2017):
         if year not in pop_dict:
             pop_dict[year] = [make_horse_pop_sum(year), make_burro_pop_sum(year), make_blm_acreage_sum(year), make_other_acreage_sum(year)]
 
