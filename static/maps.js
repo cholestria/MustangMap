@@ -90,8 +90,21 @@ function loadStateFeatures(state_id, file_names, center, zoom) {
     }
     makePopulationChart("/hachartdata/"+herd_id, 'info-box');
   };
-
-
 }
 
+function mapLoader() {
+  initMap();
+  var urlParams = new URLSearchParams(window.location.search);
+  var state_id_from_url = urlParams.get('state');
+  var herd_id_from_url = urlParams.get('herd');
+  if (state_id_from_url) {
+    for (var i=0; i<state_info_dict.length; i++) {
+      if (state_info_dict[i].state_id == state_id_from_url) {
+        loadStateFeatures(state_id_from_url, state_info_dict[i].file_names, {"lat": state_info_dict[i].latitude, "lng": state_info_dict[i].longitude}, state_info_dict[i].zoom);
+      }
+    }
+  } else {
+      loadNationalFeatures();
+  }
+}
 

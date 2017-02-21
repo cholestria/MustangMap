@@ -9,27 +9,20 @@
 {% block content %}
 
 <div id="searchable-container" class="container-fluid">
-    <div class="input-group input-group-lg">
-  <span class="input-group-addon glyphicon glyphicon-search" id="sizing-addon1" aria-hidden="true"></span>
-  <input type="text" id="myInput" onkeyup="searchHerds()" class="form-control" placeholder="Search for a herd area" aria-describedby="sizing-addon1">
-</div>
-<div id="list-group">
-      {% for state in states %}
-        {% if (state.name != "National Program" and state.name != "Eastern States") %}
+  <div class="input-group input-group-lg">
+    <span class="input-group-addon glyphicon glyphicon-search" id="sizing-addon1" aria-hidden="true"></span>
+    <input type="text" id="myInput" onkeyup="searchHerds()" class="form-control" placeholder="Search for a herd area" aria-describedby="sizing-addon1">
+  </div>
+  <div id="list-group">
+      {% for state in states %}{% if (state.name != "National Program" and state.name != "Eastern States") %}
     <a href="#" class="list-group-item list-group-item-action  list-group-item-info">
       <h4 class="list-group-item-heading">{{state.name}}</h4>
       <p class="list-group-item-text">Add some information here later.</p>
-    </a>
-        {% endif %}
+    </a>{% endif %}
         {% for herd in herds %}{% if (herd.state_id == state.state_id) %}
         <a href="/map?state={{herd.state_id}}&herd={{herd.herd_id|safe}}" class="list-group-item list-group-item-action searchable-item">{{herd.herd_name}}</a>
         {% endif %}{% endfor %}
       {% endfor %}
+  </div>
 </div>
-    <script>
-
-</script>
-</div>
-</div>
-</body>
 {% endblock %}

@@ -70,30 +70,11 @@
         <script>
         var pop_data = {{all_pop|safe}};
         var year = 2015;
-
         var state_info_dict = {{states_dict|safe}};
-
         </script>
       <div class="jumbotron">
         <div id="map"></div>
         <div>
-          <script>
-          function mapLoader() {
-            initMap();
-            var urlParams = new URLSearchParams(window.location.search);
-            var state_id_from_url = urlParams.get('state');
-            if (state_id_from_url) {
-              for (var i=0; i<state_info_dict.length; i++) {
-                if (state_info_dict[i].state_id == state_id_from_url) {
-                  loadStateFeatures(state_id_from_url, state_info_dict[i].file_names, {"lat": state_info_dict[i].latitude, "lng": state_info_dict[i].longitude}, state_info_dict[i].zoom);
-                }
-              }
-            } else {
-                loadNationalFeatures();
-            }
-          }
-
-          </script>
           <a class="btn btn-lg btn-success" role="button" onclick="loadNationalFeatures()">View National Data</a><br>
         </div>
       </div>
@@ -105,9 +86,6 @@
         <div class="col-lg-6">
           <h4>Adoptions</h4>
           <div id="info-box-2" style="min-width: 500px; height: 200px; margin: 0 auto"></div>
-          <script>
-          document.getElementById("info-box-2").addEventListener("load", pageLoad());
-          </script>
         </div>
 
         <div class="col-lg-6">
@@ -120,7 +98,7 @@
         <div id="state-links" class="col-lg-12">
             <h4> View State Data</h4><br>
           {% for state in states %}
-            <a class="btn btn-sm btn-success" role="button" <a href="/map/{{state}}">{{state}}</a>
+            <a class="btn btn-sm btn-success" role="button" onclick="loadStateFeatures('{{state.state_id}}', ['{{ ("', '".join(state.file_names))|safe }}'], {lat: {{state.latitude}}, lng: {{state.longitude}} }, {{state.zoom}})">{{state.name}}</a>
           {% endfor %}
     </div> <!-- /container -->
 
