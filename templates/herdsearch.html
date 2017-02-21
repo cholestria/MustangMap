@@ -11,7 +11,7 @@
 <div id="searchable-container" class="container-fluid">
     <div class="input-group input-group-lg">
   <span class="input-group-addon glyphicon glyphicon-search" id="sizing-addon1" aria-hidden="true"></span>
-  <input type="text" id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search for a herd area" aria-describedby="sizing-addon1">
+  <input type="text" id="myInput" onkeyup="searchHerds()" class="form-control" placeholder="Search for a herd area" aria-describedby="sizing-addon1">
 </div>
 <div id="list-group">
       {% for state in states %}
@@ -28,25 +28,6 @@
 </div>
     <script>
 
-function myFunction() {
-    // Declare variables
-    var input, filter, group, anchor_list, a, i;
-    input = document.getElementById('myInput');
-    filter = input.value.toUpperCase();
-    group = document.getElementById("list-group");
-    anchor_list = group.getElementsByTagName("a");
-
-
-    // Loop through all list items, and hide those who don't match the search query
-    for (i = 0; i < anchor_list.length; i++) {
-        a = anchor_list[i];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            anchor_list[i].style.display = "";
-        } else {
-            anchor_list[i].style.display = "none";
-        }
-    };
-};
 </script>
 </div>
 </div>

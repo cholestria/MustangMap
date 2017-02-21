@@ -3,6 +3,26 @@ function nameToId(name) {
   return name_dict[name];
 }
 
+function searchHerds() {
+    // Declare variables
+    var input, filter, group, anchor_list, a, i;
+    input = document.getElementById('myInput');
+    filter = input.value.toUpperCase();
+    group = document.getElementById("list-group");
+    anchor_list = group.getElementsByTagName("a");
+
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < anchor_list.length; i++) {
+        a = anchor_list[i];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            anchor_list[i].style.display = "";
+        } else {
+            anchor_list[i].style.display = "none";
+        }
+    }
+}
+
 function getCenter(feature) {
   var bounds = new google.maps.LatLngBounds();
   var listOfLatLngs = [];
