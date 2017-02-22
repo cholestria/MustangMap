@@ -1,7 +1,7 @@
 """Utility file to seed ratings database from MovieLens data in seed_data/"""
 
 from sqlalchemy import func
-from model import State, StateMapNames, StateData, HerdArea, HAData, HMAData
+from model import State, StateMapNames, StateData, HerdArea, HAData, HMAData, User, Facebook, Pictures
 
 from model import connect_to_db, db
 from server import app
@@ -11,6 +11,9 @@ import csv
 
 def delete_tables():
     """runs first to delete tables before insertion"""
+    Pictures.query.delete()
+    Facebook.query.delete()
+    User.query.delete()
     HMAData.query.delete()
     HAData.query.delete()
     HerdArea.query.delete()

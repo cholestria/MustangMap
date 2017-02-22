@@ -8,7 +8,7 @@ from flask import Flask, jsonify, url_for
 from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
+from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData, User, Facebook, Pictures
 from calculations import all_state_list, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary, master_state_dict
 from calculations import nationwide_pop_ar_totals, all_years_state_comparison, all_herds_dictionary
 
@@ -57,6 +57,26 @@ def newhomepage():
                             name_to_id=name_to_id,
                             all_pop=all_pop,
                             states_dict=states_dict)
+
+@app.route('/login', methods=["GET"])
+def login():
+    """Login Page"""
+
+    states_list = all_state_list()
+    for state in states_list:
+        state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
+
+
+    return render_template("login.html",
+                            states= states_list)
+
+@app.route('/login', methods=["POST"])
+def creates_user():
+    """Sends user information to the database"""
+
+
+
+    return redirect("/map")
 
 
 @app.route('/hachart/<herd_id>')

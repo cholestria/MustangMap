@@ -4,3 +4,4 @@ env
 secrets.sh
 *.txt
 queries.py
+testfunctions.js

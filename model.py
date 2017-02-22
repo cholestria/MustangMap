@@ -25,7 +25,7 @@ class State(db.Model):
 
         return {"state_id": self.state_id,
                 "name": self.name,
-               "latitude": self.latitude,
+                "latitude": self.latitude,
                 "longitude": self.longitude,
                 "zoom": self.zoom,
                 }
@@ -136,7 +136,7 @@ class HAData(db.Model):
 
     def __repr__(self):
         """Prints herd area data"""
-        return "\n<HerdAreaData %s -- year: %s, horse pop: %s, burro pop: %s" % (self.herd_id, self.year, self.horse_population, self.burro_population )
+        return "\n<HerdAreaData %s -- year: %s, horse pop: %s, burro pop: %s>" % (self.herd_id, self.year, self.horse_population, self.burro_population )
 
     def dictionary_representation(self):
         if self.ha_other_acres is None:
@@ -191,7 +191,7 @@ class HMAData(db.Model):
 
     def __repr__(self):
         """Prints herd area data"""
-        return "\n<HMAData %s -- %s" % (self.herd_id, self.name)
+        return "\n<HMAData %s -- %s>" % (self.herd_id, self.name)
 
     def dictionary_representation(self):
 
@@ -200,6 +200,57 @@ class HMAData(db.Model):
                 "hma_blm_acres": self.hma_blm_acres,
                 "hma_other_acres": self.hma_other_acres,
                 }
+
+class User(db.Model):
+    """User of MustangMap website"""
+
+    __tablename__ = "users"
+
+    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+    email = db.Column(db.String(64), nullable=True)
+    password = db.Column(db.String(64), nullable=True)
+
+    def __repr__(self):
+        """Prints user information"""
+
+        return "\n<User: %s with email: %s>" % (self.name, self.email)
+
+
+class Facebook(db.Model):
+    """Facebook information for Users"""
+
+    __tablename__ = "facebook"
+
+    user_id = db.Column(db.Integer,
+        db.ForeignKey('users.user_id'),
+        nullable=False)
+
+    facebook_id = db.Column(db.Text, primary_key=True, nullable=True)
+
+    users = db.relationship('User', backref=db.backref('facebook'))
+
+    def __repr__(self):
+        """Prints user facebook information"""
+
+        return "\n<User: %s with facebook userID: %s>" % (self.user_id, self.facebook_id)
+
+
+class Pictures(db.Model):
+    """Pictures Uploaded By Users"""
+
+    __tablename__ = "pictures"
+
+    user_id = db.Column(db.Integer,
+        db.ForeignKey('users.user_id'),
+        nullable=False)
+    file_name = db.Column(db.Text, primary_key=True, nullable="False")
+    herd_id = db.Column(db.Text,
+        db.ForeignKey('herd_areas.herd_id'),
+        nullable=False)
+
+    users = db.relationship('User', backref=db.backref('pictures'))
+    herd_areas = db.relationship('HerdArea', backref=db.backref('pictures'))
 
 ##############################################################################
 # Helper functions
