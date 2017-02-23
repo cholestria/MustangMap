@@ -1,10 +1,11 @@
 """Mustang Data."""
 import os
 import json
+import bcrypt
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, jsonify, url_for
+from flask import Flask, jsonify, url_for, request
 from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -21,8 +22,6 @@ app.secret_key = "ABC"
 # silently. This is horrible. Fix this so that, instead, it raises an
 # error.
 app.jinja_env.undefined = StrictUndefined
-
-
 
 @app.route('/')
 def homepage():
@@ -67,17 +66,49 @@ def login():
         state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
 
 
-    return render_template("login.html",
-                            states= states_list)
+    return render_template("login.html")
 
 @app.route('/login', methods=["POST"])
-def creates_user():
+def handle_login():
     """Sends user information to the database"""
+    email=request.form.get("email")
+    password=request.form.get("password")
+    hypothetical_user=User.query.filter_by(email=email).first()
+    if hypothetical_user is None:
+        flash("That email hasn't been registered. Please register.")
+        return login()
+    if bcrypt.hashpw(password, hypothetical_user.password) == hypothetical_user.password:
+        session['user_id'] = hypothetical_user.user_id
+        return redirect("/map")
+    else:
+        flash("Wrong password")
+        return login()
 
 
+@app.route('/register', methods=["POST"])
+def create_user():
+    """Process registration form"""
 
-    return redirect("/map")
+    name=request.form.get("name")
+    email=request.form.get("email")
+    password=request.form.get("password")
 
+    if User.query.filter_by(email=email).first() is not None:
+        flash("Email is already registered. Please sign in.")
+        return login()
+    else:
+        new_user = User(name=name, email=email, password=bcrypt.hashpw(password, bcrypt.gensalt()))
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect("/map")  # or user's page?
+
+@app.route('/logout')
+def logout():
+    """Logs user out"""
+
+    del session['user_id']
+
+    return login()
 
 @app.route('/hachart/<herd_id>')
 def herd_area_chart(herd_id):

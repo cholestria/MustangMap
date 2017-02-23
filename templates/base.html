@@ -38,35 +38,34 @@
           <ul class="nav navbar-nav">
             <li><a href="#about">About</a></li>
             <li><a href="/herdsearch">Search Herd Areas</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View States<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                {% for state in states %}
-                    {% if (state.name != "National Program" and state.name != "Eastern States") %}
-                <li><a onclick="loadStateFeatures('{{state.state_id}}', ['{{ ("', '".join(state.file_names))|safe }}'], {lat: {{state.latitude}}, lng: {{state.longitude}} }, {{state.zoom}})">{{state.name}}</a></li>
-                    {% endif %}
-                {% endfor %}
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">Non State Zones</li>
-                {% for state in states %}
-                    {% if (state.name == "National Program" or state.name == "Eastern States") %}
-                <li><a onclick ="loadStateFeatures()">{{state.name}}</a></li>
-                    {% endif %}
-                {% endfor %}
+            <li><a href="/map">View Maps</a></li>
               </ul>
             </li>
           </ul>
-
-
           <ul class="nav navbar-nav navbar-right">
             <li><a href="../navbar/">Default</a></li>
-            <li><a href="../navbar-static-top/">Static top</a></li>
-            <li class="active"><a href="/login">Login<span class="sr-only">(current)</span></a></li>
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/login">Login</a></li>
+                <li><a href="/login">Register</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="/logout">Logout</a></li>
+                <li role="separator" class="divider"></li>
+                <li><div id="facebook-status"></div></li>
+              </ul>
+            <li><a href="#"> </a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-            {% block content %}
-            {% endblock %}
+    <!-- Show flashed messages -->
+  {% with messages = get_flashed_messages() %}
+      {% for message in messages %}
+          <div class="alert alert-warning">{{ message }}</div>
+      {% endfor %}
+  {% endwith %}
+  {% block content %} put your content here {% endblock %}
+
   </body>
 </html>

@@ -4,9 +4,44 @@
     {{ super() }}
 
     <style type="text/css">
+
     </style>
 {% endblock %}
 {% block content %}
+    <div class="container">
+          {% if 'user_id' in session %}
+          <div class="logout"><div><h3>You're already logged in. </h3></div><br> <button class="btn btn-lg btn-primary btn-block" type="button" onclick="location.href='/logout';">Logout</button> </div>
+          {% else %}
+      <div id="signinDiv">
+      <form class="form-signin" action="/login" method="POST">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block" type="button" onclick="showRegistrationDiv()">Register for a new account</button>
+      </form>
+        <div id="registrationDiv" style="display:none;">
+          <form class="form-register" action="/register" method="POST">
+            <!-- <h2 class="form-register-heading">Register for a new Account</h2> -->
+            <label for="inputName" class="sr-only">Name</label>
+            <input type="text" id="inputName" name="name" class="form-control" placeholder="Name" required autofocus>
+            <label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required autofocus>
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+          </form>
+        </div>
+        </div>
+        {% endif %}
+    </div> <!-- /container -->
 
 <!-- will need to use this: FB.getUserID() -->
 
@@ -20,7 +55,9 @@
 <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
 </fb:login-button>
 
-<div id="status">
-</div>
+<script>
+
+</script>
+
 
 {% endblock %}

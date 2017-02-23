@@ -3,6 +3,10 @@ function nameToId(name) {
   return name_dict[name];
 }
 
+function showRegistrationDiv(evt) {
+    document.getElementById('registrationDiv').style.display = "block";
+}
+
 function searchHerds() {
     // Declare variables
     var input, filter, group, anchor_list, a, i;
