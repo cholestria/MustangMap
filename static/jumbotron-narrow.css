@@ -30,11 +30,20 @@
 
 #map {
   height: 400px;
-  width: 50%;
+  width: 100%;
   min-width: 400px;
-  display: block;
+  display: inline-block;
   margin-left: auto;
   margin-right: auto;
+  outline: #666666 solid thin;
+}
+#text-info-box {
+  height: 400px;
+  width: 100%;
+  min-width: 100px;
+  display: inline-block;
+  background-color: white;
+  outline: #666666 solid thin;
 }
 #info-box {
   outline: #666666 solid thin;
@@ -43,7 +52,11 @@
   outline: #666666 solid thin;
 }
 #nationwide {
-  margin: 0 auto;
+  margin: 10 auto;
+  padding-top: 20px;
+}
+#state-links {
+  padding-top: 10px;
 }
 
 /* Space out content a bit */
@@ -80,7 +93,7 @@ body {
 }
 
 /* Customize container */
-@media (min-width: 600px) {
+@media (min-width: 500px) {
   .container {
     max-width: 1500px;
   }

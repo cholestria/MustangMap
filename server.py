@@ -143,7 +143,6 @@ def upload_file():
         return upload()
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        print filename
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         name=request.form.get("name")
