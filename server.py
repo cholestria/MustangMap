@@ -5,15 +5,20 @@ import bcrypt
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, jsonify, url_for, request
+from flask import Flask, jsonify, url_for, request, send_from_directory
 from flask import render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'uploads/'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData, User, Facebook, Pictures
 from calculations import all_state_list, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary, master_state_dict
 from calculations import nationwide_pop_ar_totals, all_years_state_comparison, all_herds_dictionary
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
@@ -109,6 +114,58 @@ def logout():
     del session['user_id']
 
     return login()
+
+@app.route('/pictures')
+def pictures():
+
+    return render_template("pictures.html")
+
+@app.route('/upload', methods=['GET'])
+def upload():
+
+    return render_template('upload.html')
+
+
+def allowed_file(filename):
+    return'.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    #check if the post request includes the file part
+    if 'file' not in request.files:
+        flash('No file part')
+        return upload()
+    file = request.files['file']
+    #if user does not select file or submit a part without filename
+    if file.filename == '':
+        flash('No file selected')
+        return upload()
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        print filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        name=request.form.get("name")
+        herd_id=request.form.get("herd_id")
+        picture_credit=request.form.get("pc")
+        user_id=session['user_id']
+
+        new_picture = Pictures(name=name,
+                                herd_id=herd_id,
+                                picture_credit=picture_credit,
+                                user_id=user_id,
+                                filename=filename)
+        db.session.add(new_picture)
+        db.session.commit()
+        return redirect("/pictures/" + filename)
+
+
+@app.route('/pictures/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
+
 
 @app.route('/hachart/<herd_id>')
 def herd_area_chart(herd_id):

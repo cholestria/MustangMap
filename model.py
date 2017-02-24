@@ -244,7 +244,9 @@ class Pictures(db.Model):
     user_id = db.Column(db.Integer,
         db.ForeignKey('users.user_id'),
         nullable=False)
-    file_name = db.Column(db.Text, primary_key=True, nullable="False")
+    name = db.Column(db.Text, nullable=True)
+    picture_credit = db.Column(db.Text, nullable=True)
+    filename = db.Column(db.Text, primary_key=True, nullable=False)
     herd_id = db.Column(db.Text,
         db.ForeignKey('herd_areas.herd_id'),
         nullable=False)
