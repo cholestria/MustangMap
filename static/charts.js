@@ -74,22 +74,18 @@ map.data.forEach(function(feature) {
 });
 }
 
-function makeNationalTextInfoBox(data_endpoint, div_id) {
-    // Make a AJAX call to get the json data for the state
-    $.get(data_endpoint, function(popdata) {
-        var result = popdata;
-        var most_recent_year = 2016;
-        var name = result.Name;
-        var horses_population = result.PopData[most_recent_year][0];
-        var burros_population = result.PopData[most_recent_year][1];
-        var blm_acreage = result.PopData[most_recent_year][2];
-        var total_acreage = result.PopData[most_recent_year][3];
-        var header = document.getElementById("text-head");
-        header.innerHTML = name;
-        var paragraph_div = document.getElementById("text-paragraph");
-        var paragraph = "As of " + most_recent_year + ", " + name + " had " + horses_population + " Mustangs and " + burros_population + " burros in the wild. They are spread over " + total_acreage + " acres, " + blm_acreage + " of which are Bureau of Land Management acres. Non BLM acreage may be private land or managed by other ofices.";
-        paragraph_div.innerHTML = paragraph;
-    });
+function makeNationalTextInfoBox(popdata, div_id) {
+    var most_recent_year = 2016;
+    // var name = popdata.Name;
+    var horses_population = popdata.PopData[most_recent_year][0];
+    var burros_population = popdata.PopData[most_recent_year][1];
+    var blm_acreage = popdata.PopData[most_recent_year][2];
+    var total_acreage = popdata.PopData[most_recent_year][3];
+    var header = document.getElementById("text-head");
+    header.innerHTML = "Mustang Map";
+    var paragraph_div = document.getElementById("text-paragraph");
+    var paragraph = "As of " + most_recent_year + " there are approximately 67,000 Mustangs and burros living in wild. The Bureau of Land Management estimates - controversially - that there should only be 27,000. Every year Mustangs are rounded up and placed in holding pens. Some are adopted out, but most remain in holding for the rest of their lives. You can click on the map or one of the buttons below to view population, removals, and adoption information for that state.";
+    paragraph_div.innerHTML = paragraph;
 }
 
 function makeTextInfoBox(popdata, div_id) {
@@ -112,6 +108,10 @@ function makeTextInfoBox(popdata, div_id) {
     var longitude = popdata.MapDict.longitude;
     var zoom = popdata.MapDict.zoom;
     var map_names = popdata.MapDict.map_names;
+
+    //document.getElementById("state-link").innerHTML = "Click Here";
+
+    document.getElementById("link-text").innerHTML = "To see a map of all of the herd areas in this state <a class='btn' id='state-link'>click here.</a>";
 
     document.getElementById("state-link").onclick = function(event) {
         loadStateFeatures(state_id, map_names, {"lat": latitude, "lng": longitude}, zoom);

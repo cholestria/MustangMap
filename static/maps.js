@@ -61,6 +61,7 @@ function loadNationalFeatures() {
   $.get("/totaldata", function(popdata) {
     makePopulationChart(popdata, 'info-box');
     makeAdoptionChart(popdata, 'info-box-2');
+    makeNationalTextInfoBox(popdata, 'text-info-box');
   });
 
   clickHandler = function(event) {
