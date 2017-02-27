@@ -1,4 +1,5 @@
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
+from flask import url_for
 
 def all_state_list():
     """Makes States List"""
@@ -15,6 +16,18 @@ def all_state_list():
 
     return states_list
 
+
+def state_map_dict(st):
+    """Makes States Dictionary with map information"""
+
+    state = State.query.filter(State.state_id==st).options(db.joinedload('maps')).first()
+    state_dict = state.dictionary_representation()
+
+    state_dict["map_names"] = [url_for("static", filename=each.map_name) for each in state.maps]
+
+    return state_dict
+
+
 def all_herds_list():
     """Makes Herd Areas List"""
 
@@ -28,7 +41,7 @@ def name_to_id_dictionary():
     states_dict = {}
 
     for i in states:
-            states_dict[(i.state.name)] = [i.state_id]
+        states_dict[(i.state.name)] = [i.state_id]
 
     return states_dict
 
@@ -165,11 +178,13 @@ def master_state_dict(st):
     pop_dict = state_pop_dict(st)
     state_dict = state_by_year_info(st)
     footnote_dict = {}  #emtpy for now
+    map_dict = state_map_dict(st)
 
     master_state_dict = {"Name": state_name,
                 "Footnotes": footnote_dict,
                 "StateData": state_dict,
                 "PopData": pop_dict,
+                "MapDict": map_dict,
                 }
 
     return master_state_dict

@@ -33,7 +33,7 @@ def homepage():
     """Homepage"""
 
     states_dict = all_state_list()
-    name_to_id = name_to_id_dictionary()
+    # name_to_id = name_to_id_dictionary()
     all_pop_dict = all_years_state_comparison()
     all_pop = json.dumps(all_pop_dict)
 
@@ -50,7 +50,7 @@ def newhomepage():
     states_list = all_state_list()
     for state in states_list:
         state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
-    name_to_id = name_to_id_dictionary()
+    # name_to_id = name_to_id_dictionary()
     all_pop_dict = all_years_state_comparison()
     all_pop = json.dumps(all_pop_dict)
     states_dict = json.dumps(states_list)
@@ -58,9 +58,10 @@ def newhomepage():
     return render_template("homepage.html",
                             secret_key=os.environ['GOOGLE_MAPS_KEY'],
                             states=states_list,
-                            name_to_id=name_to_id,
+                            # name_to_id=name_to_id,
                             all_pop=all_pop,
                             states_dict=states_dict)
+
 
 @app.route('/login', methods=["GET"])
 def login():
@@ -73,12 +74,13 @@ def login():
 
     return render_template("login.html")
 
+
 @app.route('/login', methods=["POST"])
 def handle_login():
     """Sends user information to the database"""
-    email=request.form.get("email")
-    password=request.form.get("password")
-    hypothetical_user=User.query.filter_by(email=email).first()
+    email = request.form.get("email")
+    password = request.form.get("password")
+    hypothetical_user = User.query.filter_by(email=email).first()
     if hypothetical_user is None:
         flash("That email hasn't been registered. Please register.")
         return login()
@@ -94,9 +96,9 @@ def handle_login():
 def create_user():
     """Process registration form"""
 
-    name=request.form.get("name")
-    email=request.form.get("email")
-    password=request.form.get("password")
+    name = request.form.get("name")
+    email = request.form.get("email")
+    password = request.form.get("password")
 
     if User.query.filter_by(email=email).first() is not None:
         flash("Email is already registered. Please sign in.")
@@ -107,6 +109,7 @@ def create_user():
         db.session.commit()
         return redirect("/map")  # or user's page?
 
+
 @app.route('/logout')
 def logout():
     """Logs user out"""
@@ -115,10 +118,12 @@ def logout():
 
     return login()
 
+
 @app.route('/pictures')
 def pictures():
 
     return render_template("pictures.html")
+
 
 @app.route('/upload', methods=['GET'])
 def upload():
@@ -129,6 +134,7 @@ def upload():
 def allowed_file(filename):
     return'.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -145,10 +151,10 @@ def upload_file():
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        name=request.form.get("name")
-        herd_id=request.form.get("herd_id")
-        picture_credit=request.form.get("pc")
-        user_id=session['user_id']
+        name = request.form.get("name")
+        herd_id = request.form.get("herd_id")
+        picture_credit = request.form.get("pc")
+        user_id = session['user_id']
 
         new_picture = Pictures(name=name,
                                 herd_id=herd_id,
@@ -166,25 +172,18 @@ def uploaded_file(filename):
                                filename)
 
 
-@app.route('/hachart/<herd_id>')
-def herd_area_chart(herd_id):
-    """Population per year for each herd area"""
-
-    return render_template("hachart.html",
-                            herd_id=herd_id)
-
-
 @app.route('/hachartdata/<herd_id>')
 def herd_area_data(herd_id):
     """Population per year for each herd area"""
 
     return jsonify(ha_data_for_ha_chart(herd_id))
 
+
 @app.route('/herdsearch')
 def herd_search():
     """Herd List and Search page"""
 
-    herds= [each.dictionary_representation() for each in HerdArea.query.all()]
+    herds = [each.dictionary_representation() for each in HerdArea.query.all()]
     states_list = all_state_list()
     for state in states_list:
         state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
@@ -215,37 +214,6 @@ def total_data():
     return jsonify(nationwide_pop_ar_totals())
 
 
-@app.route('/chart/<st>')
-def basic_chart(st):
-    """Chart of Adoptions and removals over time"""
-
-    return render_template("chart.html",
-                            st=st)
-
-
-@app.route('/popchart/<st>')
-def pop_chart_by_state(st):
-
-    return render_template('popchart.html',
-                            st=st)
-
-
-@app.route('/map/<state_id>')
-def state_map(state_id):
-    """State map"""
-
-    states_dict = states_dictionary()
-
-    state_maps = StateMapNames.query.filter(StateMapNames.state_id==state_id).all()
-    state_info = State.query.filter(State.state_id==state_id).one()
-
-    return render_template("statemap.html",
-                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                            state_id=state_id,
-                            state_info=state_info,
-                            state_maps=state_maps,
-                            states=states_dict)
-
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
@@ -256,7 +224,7 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
 
     app.run(port=5000, host='0.0.0.0')

@@ -58,13 +58,18 @@ function loadNationalFeatures() {
 
   map.data.loadGeoJson('static/states.json');
 
-  makePopulationChart("/totaldata", 'info-box');
-  makeAdoptionChart("/totaldata", 'info-box-2');
+  $.get("/totaldata", function(popdata) {
+    makePopulationChart(popdata, 'info-box');
+    makeAdoptionChart(popdata, 'info-box-2');
+  });
 
   clickHandler = function(event) {
     var state_id = nameToId(event.feature.getProperty('NAME'));
-    makePopulationChart("/statedata/"+state_id, 'info-box');
-    makeAdoptionChart("/statedata/"+state_id, 'info-box-2');
+    $.get("/statedata/"+state_id, function(popdata) {
+      makePopulationChart(popdata, 'info-box');
+      makeAdoptionChart(popdata, 'info-box-2');
+      makeTextInfoBox(popdata, 'text-info-box');
+    });
   };
 }
 
@@ -80,15 +85,20 @@ function loadStateFeatures(state_id, file_names, center, zoom) {
   map.setZoom(zoom);
   map.setCenter(center);
 
-  makePopulationChart("/statedata/"+state_id, 'info-box');
-  makeAdoptionChart("/statedata/"+state_id, 'info-box-2');
+
+  $.get("/statedata/"+state_id, function(popdata) {
+      makePopulationChart(popdata, 'info-box');
+      makeAdoptionChart(popdata, 'info-box-2');
+  });
 
   clickHandler = function(event) {
     var herd_id = event.feature.getProperty('HA_NO');
     if (!herd_id) {
       herd_id = event.feature.getProperty('HMA_ID');
     }
-    makePopulationChart("/hachartdata/"+herd_id, 'info-box');
+    $.get("/hachartdata/"+herd_id, function(popdata) {
+      makePopulationChart(popdata, 'info-box');
+    });
   };
 }
 
