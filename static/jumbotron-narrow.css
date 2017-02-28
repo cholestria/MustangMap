@@ -53,20 +53,20 @@
 }
 #nationwide {
   margin: 10 auto;
-  padding-top: 20px;
+  padding: 20px;
 }
-#state-links {
-  padding-top: 10px;
+#state-link {
+  font-size: medium;
 }
 #text-paragraph {
   text-align: left;
   padding: 20px;
-  font-size: 3vmin;
+  font-size: medium;
 }
 #link-text {
   text-align: center;
   padding: 20px;
-  font-size: 3vmin;
+  font-size: medium;
 }
 
 /* Space out content a bit */

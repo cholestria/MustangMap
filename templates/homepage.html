@@ -1,19 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Mustang Map{% endblock %}
 {% block head %}
-    {{ super() }}
-
-    <style type="text/css">
-
-    </style>
+  {{ super() }}
+  <script>
+  var pop_data = {{all_pop|safe}};
+  var year = 2015;
+  var state_info_dict = {{states_dict|safe}};
+  </script>
 {% endblock %}
 {% block content %}
-
-        <script>
-        var pop_data = {{all_pop|safe}};
-        var year = 2015;
-        var state_info_dict = {{states_dict|safe}};
-        </script>
       <div class="jumbotron">
         <div class="container-fluid">
           <div class="row">
@@ -45,7 +40,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> <!-- /jumbotron -->
 
       <div class="row marketing">
         <div class="col-lg-6">

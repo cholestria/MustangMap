@@ -6,4 +6,6 @@ secrets.sh
 queries.py
 testfunctions.js
 sqlqueries.sql
-
+templates/dropdown for states view
+uploads/
+clean_up.py

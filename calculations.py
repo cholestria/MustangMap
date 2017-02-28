@@ -1,6 +1,7 @@
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
 from flask import url_for
 
+
 def all_state_list():
     """Makes States List"""
 
@@ -9,7 +10,7 @@ def all_state_list():
 
     for i in states:
         state_dict = i.dictionary_representation()
-        map_objects = StateMapNames.query.filter(StateMapNames.state_id==i.state_id).all()
+        map_objects = StateMapNames.query.filter(StateMapNames.state_id == i.state_id).all()
         file_names = [each.map_name for each in map_objects]
         state_dict["file_names"] = file_names
         states_list.append(state_dict)
@@ -20,39 +21,14 @@ def all_state_list():
 def state_map_dict(st):
     """Makes States Dictionary with map information"""
 
-    state = State.query.filter(State.state_id==st).options(db.joinedload('maps')).first()
-    state_dict = state.dictionary_representation()
+    #used in master_state_dict(st)
 
-    state_dict["map_names"] = [url_for("static", filename=each.map_name) for each in state.maps]
+    state = State.query.filter(State.state_id == st).options(db.joinedload('maps')).first()
+    map_dict = state.dictionary_representation()
 
-    return state_dict
+    map_dict["map_names"] = [url_for("static", filename=each.map_name) for each in state.maps]
 
-
-def all_herds_list():
-    """Makes Herd Areas List"""
-
-    return [each.dictionary_representation() for each in HerdArea.query.all()]
-
-
-def name_to_id_dictionary():
-    """Makes Name to Id Dictionary"""
-
-    states = StateData.query.options(db.joinedload('state')).all()
-    states_dict = {}
-
-    for i in states:
-        states_dict[(i.state.name)] = [i.state_id]
-
-    return states_dict
-
-
-def id_to_name(st):
-    """Returns a State Name Given a State ID"""
-
-    states = State.query.filter_by(state_id=st).all()
-
-    for i in states:
-        return i.name
+    return map_dict
 
 
 def ha_data_by_state(st):
@@ -62,17 +38,20 @@ def ha_data_by_state(st):
     dictionary = {}
 
     for i in herds:
-        if i.herd_areas.state_id==st:
+        if i.herd_areas.state_id == st:
             if i.herd_id not in dictionary:
                 dictionary[i.herd_id] = {i.year: i.dictionary_representation()}
             else:
                 dictionary[i.herd_id][i.year] = i.dictionary_representation()
     return dictionary
 
+
 def ha_data_for_ha_chart(herd_id):
     """Returns the HA dictionary with additonal json information"""
 
-    a_herd = HAData.query.filter(HAData.herd_id==herd_id).options(db.joinedload('herd_areas')).all()
+    #used in hachartdata jsonify
+
+    a_herd = HAData.query.filter(HAData.herd_id == herd_id).options(db.joinedload('herd_areas')).all()
     herd_name = a_herd[0].herd_areas.herd_name
     ha_pop_dict = {}
     footnote_dict = {}
@@ -95,16 +74,19 @@ def ha_data_for_ha_chart(herd_id):
             ha_pop_dict[(i.year)] = [horse_population, burro_population, blm_acreage, other_acreage]
 
     master_ha_dict = {"Name": herd_name,
-        "Footnotes": footnote_dict,
-        "PopData": ha_pop_dict,
-        }
+                      "Footnotes": footnote_dict,
+                      "PopData": ha_pop_dict,
+                      }
 
     return master_ha_dict
+
 
 def state_by_year_info(st):
     """Returns per year removal and adoption info for a state"""
 
-    all_years = StateData.query.filter(StateData.state_id==st).options(db.joinedload('state')).all()
+    #used in master_state_dict(st)
+
+    all_years = StateData.query.filter(StateData.state_id == st).options(db.joinedload('state')).all()
 
     state_dict = {}
     footnote_dict = {}
@@ -124,134 +106,86 @@ def state_by_year_info(st):
 
 def state_pop_dict(st):
     """Returns dictionary of state population and acreage sums from herd data"""
+
+    #used in master_state_dict(st)
+
     all_herds = ha_data_by_state(st)
     pop_dict = {}
 
-    def make_horse_pop_sum(year):
-        horse_pop = []
-        for herd in all_herds:
-            try:
-                horse_pop.append(all_herds[str(herd)][year]['horse_population'])
-            except:
-                pass
-        return sum(horse_pop)
-
-    def make_burro_pop_sum(year):
-        burro_pop = []
-        for herd in all_herds:
-            try:
-                burro_pop.append(all_herds[str(herd)][year]['burro_population'])
-            except:
-                pass
-        return sum(burro_pop)
-
-    def make_blm_acreage_sum(year):
-        blm_acres = []
-        for herd in all_herds:
-            try:
-                blm_acres.append(all_herds[str(herd)][year]['ha_blm_acres'])
-            except:
-                pass
-        return sum(blm_acres)
-
-    def make_other_acreage_sum(year):
-        other_acres = []
-        for herd in all_herds:
-            try:
-                other_acres.append(all_herds[str(herd)][year]['ha_other_acres'])
-            except:
-                pass
-        return sum(other_acres)
-
     for year in range(2005, 2017):
         if year not in pop_dict:
-            pop_dict[year] = [make_horse_pop_sum(year), make_burro_pop_sum(year), make_blm_acreage_sum(year), make_other_acreage_sum(year)]
-
+            horse_pop = 0
+            burro_pop = 0
+            blm_acreage = 0
+            total_acreage = 0
+            for herd_data in all_herds.values():
+                try:
+                    year_data = herd_data[year]
+                    horse_pop += year_data['horse_population']
+                    burro_pop += year_data['burro_population']
+                    blm_acreage += year_data['ha_blm_acres']
+                    total_acreage += year_data['ha_other_acres']
+                except:
+                    pass
+            pop_dict[year] = [horse_pop, burro_pop, blm_acreage, total_acreage]
     return pop_dict
 
 
 def master_state_dict(st):
-    """creates a master dictionary that contains all state information"""
-    all_years = StateData.query.filter(StateData.state_id==st).options(db.joinedload('state')).all()
+    """Creates a master dictionary that contains all state information"""
+
+    #returned as json for statedata/st
+    all_years = StateData.query.filter(StateData.state_id == st).options(db.joinedload('state')).all()
     state_name = all_years[0].state.name
 
     pop_dict = state_pop_dict(st)
-    state_dict = state_by_year_info(st)
+    adopt_dict = state_by_year_info(st)
     footnote_dict = {}  #emtpy for now
     map_dict = state_map_dict(st)
 
     master_state_dict = {"Name": state_name,
-                "Footnotes": footnote_dict,
-                "StateData": state_dict,
-                "PopData": pop_dict,
-                "MapDict": map_dict,
-                }
+                         "Footnotes": footnote_dict,
+                         "AdoptData": adopt_dict,
+                         "PopData": pop_dict,
+                         "MapDict": map_dict,
+                         }
 
     return master_state_dict
 
 
-def total_horse_adoptions_per_year(yr):
-    """Returns a total of horse adoptions across all states for year"""
+def nationwide_population_totals():
+    """Returns nationwide population and acreage data for all years"""
 
-    return db.session.query(db.func.sum(StateData.horse_adoptions)).filter(StateData.year==yr).one()[0]
+    #used in the nationwide master dictionary
 
-def total_burro_adoptions_per_year(yr):
-    """Returns a total of burro adoptions across all states for year"""
+    pop_data = HAData.query.options(db.joinedload('herd_areas')).all()
+    all_dict = {}
 
-    return db.session.query(db.func.sum(StateData.burro_adoptions)).filter(StateData.year==yr).one()[0]
+    for i in pop_data:
+        if i.year in all_dict:
+            year = all_dict[i.year]
+        else:
+            year = [0, 0, 0, 0]
+        if i.horse_population is not None:
+            year[0] = year[0] + i.horse_population
+        if i.burro_population is not None:
+            year[1] = year[1] + i.burro_population
+        if i.ha_blm_acres is not None:
+            year[2] = year[2] + i.ha_blm_acres
+        if i.ha_other_acres is not None:
+            year[3] = year[3] + i.ha_other_acres
 
-def total_horse_removals_per_year(yr):
-    """Returns a total of horse removals across all states for year"""
+        all_dict[i.year] = year
 
-    return db.session.query(db.func.sum(StateData.horse_removals)).filter(StateData.year==yr).one()[0]
-
-
-def total_burro_removals_per_year(yr):
-    """Returns a total of burro removals across all states for year"""
-
-    return db.session.query(db.func.sum(StateData.burro_removals)).filter(StateData.year==yr).one()[0]
-
-
-def total_horse_population_per_year(yr):
-    """Returns a total of horse populations across all states for a year"""
-
-    return db.session.query(db.func.sum(HAData.horse_population)).filter(HAData.year==yr).one()[0]
-
-
-def total_burro_population_per_year(yr):
-    """Returns a total of horse populations across all states for a year"""
-
-    return db.session.query(db.func.sum(HAData.burro_population)).filter(HAData.year==yr).one()[0]
-
-def total_blm_acres_per_year(yr):
-    """Returns a total of horse populations across all states for a year"""
-
-    return db.session.query(db.func.sum(HAData.ha_blm_acres)).filter(HAData.year==yr).one()[0]
-
-def total_other_acres_per_year(yr):
-    """Returns a total of horse populations across all states for a year"""
-
-    return db.session.query(db.func.sum(HAData.ha_other_acres)).filter(HAData.year==yr).one()[0]
-
-
-def all_states_pop_data():
-    """Returns a dictionary of nationwide adoptions and removals"""
-
-    all_data = HAData.query.options(db.joinedload('herd_areas')).all()
-    pop_dict = {}
-
-    for i in all_data:
-        if i.year not in pop_dict:
-            pop_dict[i.year] = [total_horse_population_per_year(i.year), total_burro_population_per_year(i.year), total_blm_acres_per_year(i.year), total_other_acres_per_year(i.year)]
-
+    return all_dict
 
 def nationwide_pop_ar_totals():
-    """Returns a dictionary of nationwide adoptions and removals"""
+    """Returns a master dictionary of nationwide adoptions and removals and populations"""
+
+    #used in /totaldata jsonify
 
     all_data = StateData.query.options(db.joinedload('state')).all()
-    all_pop_data = HAData.query.options(db.joinedload('herd_areas')).all()
-    pop_dict = {}
-    state_dict = {}
+    adopt_dict = {}
     footnote_dict = {}
 
     for i in all_data:
@@ -264,37 +198,34 @@ def nationwide_pop_ar_totals():
             burro_removals = 0
             footnote_dict[(i.year)] = "no burro removal data was reported for this year"
 
-        if i.year not in state_dict:
-            state_dict[i.year] = [total_horse_adoptions_per_year(i.year), total_burro_adoptions_per_year(i.year), total_horse_removals_per_year(i.year), total_burro_removals_per_year(i.year)]
+        if i.year in adopt_dict:
+            year = adopt_dict[i.year]
+        else:
+            year = [0, 0, 0, 0]
+        if i.horse_adoptions is not None:
+            year[0] = year[0] + i.horse_adoptions
+        if i.burro_adoptions is not None:
+            year[1] = year[1] + i.burro_adoptions
+        if i.horse_removals is not None:
+            year[2] = year[2] + i.horse_removals
+        if i.burro_removals is not None:
+            year[3] = year[3] + i.burro_removals
 
-    for i in all_pop_data:
-        if i.year not in pop_dict:
-            pop_dict[i.year] = [total_horse_population_per_year(i.year), total_burro_population_per_year(i.year), total_blm_acres_per_year(i.year), total_other_acres_per_year(i.year)]
+        adopt_dict[i.year] = year
 
     master_dict = {"Name": "Nationwide",
-                    "Footnotes": footnote_dict,
-                    "StateData": state_dict,
-                    "PopData": pop_dict,
-                    }
+                   "Footnotes": footnote_dict,
+                   "AdoptData": adopt_dict,
+                   "PopData": nationwide_population_totals(),
+                   }
 
     return master_dict
 
 
-def all_herds_dictionary():
-    all_herds = HerdArea.query.options(db.joinedload('state')).all()
-    herd_dict = {}
-
-    for herd in all_herds:
-        if herd.state.name not in herd_dict:
-            herd_dict[herd.state.name] = [i.herd_name]
-        else:
-            herd_dict[herd.state.name].append(herd.herd_name)
-
-    return herd_dict
-
-
 def all_years_state_comparison():
     """Returns all population data for all years and all states"""
+
+    #used in the heat maps function
 
     pop_data = HAData.query.options(db.joinedload('herd_areas')).all()
     all_dict = {}

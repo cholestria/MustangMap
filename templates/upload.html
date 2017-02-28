@@ -2,13 +2,9 @@
 {% block title %}Upload{% endblock %}
 {% block head %}
     {{ super() }}
-
-    <style type="text/css">
-
-    </style>
+    <script src="{{url_for('static', filename='upload.js')}}"></script>
 {% endblock %}
 {% block content %}
-
 
 <div class="container" style="margin-top: 20px;">
   <div id="upload-div">
@@ -41,51 +37,5 @@
       </div>
   </div>
 </div>
-
-<script>
-$(function() {
-
-  // We can attach the `fileselect` event to all file inputs on the page
-  $(document).on('change', ':file', function() {
-    var input = $(this),
-        numFiles = input.get(0).files ? input.get(0).files.length : 1,
-        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-    input.trigger('fileselect', [numFiles, label]);
-  });
-
-  // We can watch for our custom `fileselect` event like this
-  $(document).ready( function() {
-      $(':file').on('fileselect', function(event, numFiles, label) {
-
-          var input = $(this).parents('.input-group').find(':text'),
-              log = numFiles > 1 ? numFiles + ' files selected' : label;
-
-          if( input.length ) {
-              input.val(log);
-          } else {
-              if( log ) alert(log);
-          }
-      });
-  });
-});
-
-document.addEventListener("DOMContentLoaded", function (event) {
-  var button = document.getElementById('upload');
-  var clickBtn = document.getElementById('terms');
-
-  // Disable the button on initial page load
-  button.disabled = true;
-
-  //add event listener
-  clickBtn.addEventListener('change', function(event) {
-      button.disabled = !button.disabled;
-  });
-
-  button.addEventListener('change', function(event) {
-      alert('Enabled!');
-  });
-})
-
-</script>
 
 {% endblock %}

@@ -14,8 +14,8 @@ UPLOAD_FOLDER = 'uploads/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData, User, Facebook, Pictures
-from calculations import all_state_list, ha_data_by_state, state_by_year_info, ha_data_for_ha_chart, name_to_id_dictionary, master_state_dict
-from calculations import nationwide_pop_ar_totals, all_years_state_comparison, all_herds_dictionary
+from calculations import all_state_list, ha_data_for_ha_chart, master_state_dict
+from calculations import nationwide_pop_ar_totals, all_years_state_comparison
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -28,6 +28,7 @@ app.secret_key = "ABC"
 # error.
 app.jinja_env.undefined = StrictUndefined
 
+
 @app.route('/')
 def homepage():
     """Homepage"""
@@ -38,10 +39,11 @@ def homepage():
     all_pop = json.dumps(all_pop_dict)
 
     return render_template("googlemapshomepage.html",
-                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                            states=states_dict,
-                            name_to_id=name_to_id,
-                            all_pop=all_pop)
+                           secret_key=os.environ['GOOGLE_MAPS_KEY'],
+                           states=states_dict,
+                           # name_to_id=name_to_id,
+                           all_pop=all_pop)
+
 
 @app.route('/map')
 def newhomepage():
@@ -56,11 +58,11 @@ def newhomepage():
     states_dict = json.dumps(states_list)
 
     return render_template("homepage.html",
-                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                            states=states_list,
-                            # name_to_id=name_to_id,
-                            all_pop=all_pop,
-                            states_dict=states_dict)
+                           secret_key=os.environ['GOOGLE_MAPS_KEY'],
+                           states=states_list,
+                           # name_to_id=name_to_id,
+                           all_pop=all_pop,
+                           states_dict=states_dict)
 
 
 @app.route('/login', methods=["GET"])
@@ -70,7 +72,6 @@ def login():
     states_list = all_state_list()
     for state in states_list:
         state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
-
 
     return render_template("login.html")
 
@@ -157,10 +158,10 @@ def upload_file():
         user_id = session['user_id']
 
         new_picture = Pictures(name=name,
-                                herd_id=herd_id,
-                                picture_credit=picture_credit,
-                                user_id=user_id,
-                                filename=filename)
+                               herd_id=herd_id,
+                               picture_credit=picture_credit,
+                               user_id=user_id,
+                               filename=filename)
         db.session.add(new_picture)
         db.session.commit()
         return redirect("/pictures/" + filename)
@@ -189,8 +190,8 @@ def herd_search():
         state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
 
     return render_template("herdsearch.html",
-                            herds=herds,
-                            states=states_list)
+                           herds=herds,
+                           states=states_list)
 
 
 @app.route('/statedata/<st>')
@@ -212,7 +213,6 @@ def total_data():
     """Adoption and Removal Chart totaled"""
 
     return jsonify(nationwide_pop_ar_totals())
-
 
 
 if __name__ == "__main__":

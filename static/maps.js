@@ -62,6 +62,7 @@ function loadNationalFeatures() {
     makePopulationChart(popdata, 'info-box');
     makeAdoptionChart(popdata, 'info-box-2');
     makeNationalTextInfoBox(popdata, 'text-info-box');
+    document.getElementById("link-text").innerHTML = "";
   });
 
   clickHandler = function(event) {
@@ -70,6 +71,7 @@ function loadNationalFeatures() {
       makePopulationChart(popdata, 'info-box');
       makeAdoptionChart(popdata, 'info-box-2');
       makeTextInfoBox(popdata, 'text-info-box');
+      makeStateLink(popdata, 'text-info-box');
     });
   };
 }
@@ -90,6 +92,8 @@ function loadStateFeatures(state_id, file_names, center, zoom) {
   $.get("/statedata/"+state_id, function(popdata) {
       makePopulationChart(popdata, 'info-box');
       makeAdoptionChart(popdata, 'info-box-2');
+      makeTextInfoBox(popdata, 'info-box-2');
+      makeHerdLink('info-box-2');
   });
 
   clickHandler = function(event) {
@@ -99,6 +103,8 @@ function loadStateFeatures(state_id, file_names, center, zoom) {
     }
     $.get("/hachartdata/"+herd_id, function(popdata) {
       makePopulationChart(popdata, 'info-box');
+      makeTextInfoBox(popdata, 'text-info-box');
+      document.getElementById("link-text").innerHTML = "";
     });
   };
 }
