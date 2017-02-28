@@ -34,14 +34,12 @@ def homepage():
     """Homepage"""
 
     states_dict = all_state_list()
-    # name_to_id = name_to_id_dictionary()
     all_pop_dict = all_years_state_comparison()
     all_pop = json.dumps(all_pop_dict)
 
     return render_template("googlemapshomepage.html",
                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
                            states=states_dict,
-                           # name_to_id=name_to_id,
                            all_pop=all_pop)
 
 
@@ -52,7 +50,6 @@ def newhomepage():
     states_list = all_state_list()
     for state in states_list:
         state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
-    # name_to_id = name_to_id_dictionary()
     all_pop_dict = all_years_state_comparison()
     all_pop = json.dumps(all_pop_dict)
     states_dict = json.dumps(states_list)
@@ -60,7 +57,6 @@ def newhomepage():
     return render_template("homepage.html",
                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
                            states=states_list,
-                           # name_to_id=name_to_id,
                            all_pop=all_pop,
                            states_dict=states_dict)
 
