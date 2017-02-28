@@ -104,6 +104,8 @@ def create_user():
         new_user = User(name=name, email=email, password=bcrypt.hashpw(password, bcrypt.gensalt()))
         db.session.add(new_user)
         db.session.commit()
+        session['user_id'] = new_user.user_id
+
         return redirect("/map")  # or user's page?
 
 
@@ -154,7 +156,6 @@ def upload_file():
 
         name = request.form.get("name")
         herd_id = request.form.get("herd_id")
-        print request.form
         picture_credit = request.form.get("pc")
         user_id = session['user_id']
 
@@ -214,19 +215,6 @@ def total_data():
     """Adoption and Removal Chart totaled"""
 
     return jsonify(nationwide_pop_ar_totals())
-
-
-@app.route('/dropdown')
-def dropdown():
-
-    herds = [each.dictionary_representation() for each in HerdArea.query.all()]
-    states_list = all_state_list()
-    for state in states_list:
-        state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
-
-    return render_template("dropdown.html",
-                           herds=herds,
-                           states=states_list)
 
 
 if __name__ == "__main__":
