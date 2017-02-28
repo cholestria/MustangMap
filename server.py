@@ -125,7 +125,11 @@ def pictures():
 @app.route('/upload', methods=['GET'])
 def upload():
 
-    return render_template('upload.html')
+    herds = [each.dictionary_representation() for each in HerdArea.query.all()]
+
+
+    return render_template('upload.html',
+                            herds=herds)
 
 
 def allowed_file(filename):
@@ -150,6 +154,7 @@ def upload_file():
 
         name = request.form.get("name")
         herd_id = request.form.get("herd_id")
+        print request.form
         picture_credit = request.form.get("pc")
         user_id = session['user_id']
 
@@ -209,6 +214,19 @@ def total_data():
     """Adoption and Removal Chart totaled"""
 
     return jsonify(nationwide_pop_ar_totals())
+
+
+@app.route('/dropdown')
+def dropdown():
+
+    herds = [each.dictionary_representation() for each in HerdArea.query.all()]
+    states_list = all_state_list()
+    for state in states_list:
+        state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
+
+    return render_template("dropdown.html",
+                           herds=herds,
+                           states=states_list)
 
 
 if __name__ == "__main__":

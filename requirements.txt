@@ -10,3 +10,4 @@ itsdangerous==0.24
 wsgiref==0.1.2
 psycopg2
 py-bcrypt
+Flask-RESTful==0.3.1

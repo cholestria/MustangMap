@@ -28,5 +28,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
   //add event listener
   terms.addEventListener('change', function(event) {
       button.disabled = !terms.checked;
+      document.getElementById('termsConditionsDiv').style.display = "none";
   });
 });
+
+
+function showTermsConditionsDiv(evt) {
+    document.getElementById('termsConditionsDiv').style.display = "block";
+}

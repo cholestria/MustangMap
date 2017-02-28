@@ -234,6 +234,11 @@ body {
   padding: 15px;
   margin: 0 auto;
 }
+.form-control{
+  max-width: 600px;
+  padding: 15px;
+  margin: 0 auto;
+}
 .form-upload .form-upload-heading,
 .form-upload .checkbox {
   margin-bottom: 10px;
@@ -252,6 +257,15 @@ body {
 }
 .form-upload .form-control:focus {
   z-index: 2;
+}
+#termsConditionsDiv {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 11px;
 }
 .form-upload input[type="email"] {
   margin-bottom: -1px;

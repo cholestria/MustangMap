@@ -34,6 +34,8 @@ def state_map_dict(st):
 def ha_data_by_state(st):
     """Returns a dictionary of population and acreage per HA within a state"""
 
+    #used in state_pop_dict(st)
+
     herds = HAData.query.options(db.joinedload('herd_areas')).all()
     dictionary = {}
 
@@ -81,7 +83,7 @@ def ha_data_for_ha_chart(herd_id):
     return master_ha_dict
 
 
-def state_by_year_info(st):
+def state_adopt_removal_data(st):
     """Returns per year removal and adoption info for a state"""
 
     #used in master_state_dict(st)
@@ -111,8 +113,9 @@ def state_pop_dict(st):
 
     all_herds = ha_data_by_state(st)
     pop_dict = {}
+    years = [each[1].keys() for each in all_herds.items()][0]
 
-    for year in range(2005, 2017):
+    for year in years:
         if year not in pop_dict:
             horse_pop = 0
             burro_pop = 0
@@ -135,11 +138,12 @@ def master_state_dict(st):
     """Creates a master dictionary that contains all state information"""
 
     #returned as json for statedata/st
+
     all_years = StateData.query.filter(StateData.state_id == st).options(db.joinedload('state')).all()
     state_name = all_years[0].state.name
 
     pop_dict = state_pop_dict(st)
-    adopt_dict = state_by_year_info(st)
+    adopt_dict = state_adopt_removal_data(st)
     footnote_dict = {}  #emtpy for now
     map_dict = state_map_dict(st)
 
@@ -159,11 +163,11 @@ def nationwide_population_totals():
     #used in the nationwide master dictionary
 
     pop_data = HAData.query.options(db.joinedload('herd_areas')).all()
-    all_dict = {}
+    pop_dict = {}
 
     for i in pop_data:
-        if i.year in all_dict:
-            year = all_dict[i.year]
+        if i.year in pop_dict:
+            year = pop_dict[i.year]
         else:
             year = [0, 0, 0, 0]
         if i.horse_population is not None:
@@ -175,14 +179,15 @@ def nationwide_population_totals():
         if i.ha_other_acres is not None:
             year[3] = year[3] + i.ha_other_acres
 
-        all_dict[i.year] = year
+        pop_dict[i.year] = year
 
-    return all_dict
+    return pop_dict
+
 
 def nationwide_pop_ar_totals():
     """Returns a master dictionary of nationwide adoptions and removals and populations"""
 
-    #used in /totaldata jsonify
+    #used in /totaldata json
 
     all_data = StateData.query.options(db.joinedload('state')).all()
     adopt_dict = {}
