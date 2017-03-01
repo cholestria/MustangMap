@@ -1,5 +1,6 @@
-from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData
+from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData, User, Pictures
 from flask import url_for
+import random
 
 
 def all_state_list():
@@ -48,6 +49,30 @@ def ha_data_by_state(st):
     return dictionary
 
 
+def find_pictures_by_herd_id(herd_id):
+    "Returns pictures of Mustangs from a particular herd area"
+
+    #used in herd_area_data
+
+    picture_info = Pictures.query.filter(Pictures.herd_id == herd_id).options(db.joinedload('users')).all()
+    length = len(picture_info)
+    picture_dict = {}
+
+    if length == 0:
+        picture_dict["none"] = {"none": "none"}
+    else:
+        if length > 1:
+            index = random.randint(0, (length-1))
+        else:
+            index = 0
+        selected_picture = picture_info[index]
+        picture_dict = {}
+
+        picture_dict[selected_picture.filename] = {"horse": selected_picture.name, "credit": selected_picture.picture_credit, "user": selected_picture.users.name}
+
+    return picture_dict
+
+
 def ha_data_for_ha_chart(herd_id):
     """Returns the HA dictionary with additonal json information"""
 
@@ -57,6 +82,7 @@ def ha_data_for_ha_chart(herd_id):
     herd_name = a_herd[0].herd_areas.herd_name
     ha_pop_dict = {}
     footnote_dict = {}
+    pictures = find_pictures_by_herd_id(herd_id)
 
     for i in a_herd:
         horse_population = i.horse_population
@@ -78,6 +104,7 @@ def ha_data_for_ha_chart(herd_id):
     master_ha_dict = {"Name": herd_name,
                       "Footnotes": footnote_dict,
                       "PopData": ha_pop_dict,
+                      "Pictures": pictures,
                       }
 
     return master_ha_dict
@@ -253,7 +280,3 @@ def all_years_state_comparison():
 
     return all_dict
 
-def find_pictures_by_herd_id(herd_id):
-    "Returns pictures of Mustangs from a particular herd area"
-
-    return Pictures.query.filter_by(herd_id = herd_id).first()

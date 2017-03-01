@@ -117,6 +117,17 @@ function makeHerdLink(div_id) {
     };
 }
 
+function makeHerdPictureBox(data, div_id) {
+    var most_recent_year = 2016;
+    var picture_object = data.Pictures;
+    var filename = Object.keys(picture_object);
+    if (filename == "none") {
+        document.getElementById("image-div").style.display = "none";
+    } else {
+    document.getElementById("image-div").style.display = "block";
+    document.getElementById("image").src = "pictures/"+filename;
+    }
+}
 
 function makeStateLink(data, div_id) {
     var state_id = data.MapDict.state_id;
