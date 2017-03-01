@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
   var button = document.getElementById('upload');
   var terms = document.getElementById('terms');
 
-  // Disable the button on initial page load
-  button.disabled = true;
+  // Disable the button on initial page load if button is not checked
+  button.disabled = !terms.checked;
 
   //add event listener
   terms.addEventListener('change', function(event) {

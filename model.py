@@ -254,6 +254,12 @@ class Pictures(db.Model):
     users = db.relationship('User', backref=db.backref('pictures'))
     herd_areas = db.relationship('HerdArea', backref=db.backref('pictures'))
 
+    def __repr__(self):
+        """Prints picture information"""
+
+        return "\n<Filename: %s with with herd ID: %s>" % (self.filename, self.herd_id)
+
+
 ##############################################################################
 # Helper functions
 

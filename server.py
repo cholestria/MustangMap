@@ -2,6 +2,7 @@
 import os
 import json
 import bcrypt
+import uuid
 
 from jinja2 import StrictUndefined
 
@@ -83,6 +84,7 @@ def handle_login():
         return login()
     if bcrypt.hashpw(password, hypothetical_user.password) == hypothetical_user.password:
         session['user_id'] = hypothetical_user.user_id
+        flash("You're now logged in.")
         return redirect("/map")
     else:
         flash("Wrong password")
@@ -106,6 +108,7 @@ def create_user():
         db.session.commit()
         session['user_id'] = new_user.user_id
 
+        flash("Thanks for signing up. You're now logged in.")
         return redirect("/map")  # or user's page?
 
 
@@ -152,7 +155,10 @@ def upload_file():
         return upload()
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filename, file_extension = os.path.splitext(filename)
+        new_filename = str(uuid.uuid4())
+        total_filename = new_filename + file_extension
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], total_filename))
 
         name = request.form.get("name")
         herd_id = request.form.get("herd_id")
@@ -163,10 +169,10 @@ def upload_file():
                                herd_id=herd_id,
                                picture_credit=picture_credit,
                                user_id=user_id,
-                               filename=filename)
+                               filename=total_filename)
         db.session.add(new_picture)
         db.session.commit()
-        return redirect("/pictures/" + filename)
+        return redirect("/pictures/" + total_filename)
 
 
 @app.route('/pictures/<filename>')

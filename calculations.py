@@ -252,3 +252,8 @@ def all_years_state_comparison():
         all_dict[i.year] = year
 
     return all_dict
+
+def find_pictures_by_herd_id(herd_id):
+    "Returns pictures of Mustangs from a particular herd area"
+
+    return Pictures.query.filter_by(herd_id = herd_id).first()

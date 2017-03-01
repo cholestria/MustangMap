@@ -307,10 +307,13 @@ function makeAdoptionChart(data, div_id) {
             text: "Source: BLM"
         },
         legend: {
+            itemStyle: {
+            fontSize: 'small',
+            },
             // layout: 'vertical',
             // align: 'left',
             // verticalAlign: 'top',
-            // // x: 400,
+            // x: 0,
             // y: 50,
             // floating: true,
             borderWidth: 0,
