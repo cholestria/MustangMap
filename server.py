@@ -8,6 +8,7 @@ from jinja2 import StrictUndefined
 
 from flask import Flask, jsonify, url_for, request, send_from_directory
 from flask import render_template, redirect, flash, session
+from flask_restful import reqparse, abort, Api, Resource
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.utils import secure_filename
 
@@ -15,8 +16,8 @@ UPLOAD_FOLDER = 'uploads/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData, User, Facebook, Pictures
-from calculations import all_state_list, ha_data_for_ha_chart, master_state_dict
-from calculations import nationwide_pop_ar_totals, all_years_state_comparison
+from calculations import all_state_list, all_years_state_comparison
+from mustangapi import PopByYearAPI, HerdAreaDataAPI, StateDataAPI, TotalDataAPI
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -29,6 +30,8 @@ app.secret_key = "ABC"
 # error.
 app.jinja_env.undefined = StrictUndefined
 
+
+api = Api(app)
 
 @app.route('/')
 def homepage():
@@ -181,13 +184,6 @@ def uploaded_file(filename):
                                filename)
 
 
-@app.route('/hachartdata/<herd_id>')
-def herd_area_data(herd_id):
-    """Population per year for each herd area"""
-
-    return jsonify(ha_data_for_ha_chart(herd_id))
-
-
 @app.route('/herdsearch')
 def herd_search():
     """Herd List and Search page"""
@@ -202,25 +198,10 @@ def herd_search():
                            states=states_list)
 
 
-@app.route('/statedata/<st>')
-def chart_per_state(st):
-    """Adoption and Removal Chart Per State"""
-
-    return jsonify(master_state_dict(st))
-
-
-@app.route('/popbyyear/<yr>')
-def populations_by_year(yr):
-    """Populations of All States by Year"""
-
-    return jsonify(all_years_state_comparison())
-
-
-@app.route('/totaldata')
-def total_data():
-    """Adoption and Removal Chart totaled"""
-
-    return jsonify(nationwide_pop_ar_totals())
+api.add_resource(TotalDataAPI, '/totaldata')
+api.add_resource(StateDataAPI, '/statedata/<state_id>')
+api.add_resource(HerdAreaDataAPI, '/hachartdata/<herd_id>')
+api.add_resource(PopByYearAPI, '/popbyyear')
 
 
 if __name__ == "__main__":
@@ -233,6 +214,5 @@ if __name__ == "__main__":
 
     # Use the DebugToolbar
     # DebugToolbarExtension(app)
-
 
     app.run(port=5000, host='0.0.0.0')

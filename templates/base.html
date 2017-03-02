@@ -14,7 +14,6 @@
     <script src="{{url_for('static', filename='charts.js')}}"></script>
     <script src="{{url_for('static', filename='maps.js')}}"></script>
     <script src="{{url_for('static', filename='facebook.js')}}"></script>
-    <!-- make the following only load if on upload page -->
     <link href="static/jumbotron-narrow.css" rel="stylesheet">
     {% block head %}{% endblock %}
   </head>
@@ -48,10 +47,12 @@
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="/login">Login</a></li>
-                <li><a href="/login">Register</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="/logout">Logout</a></li>
+                {% if 'user_id' in session %}
+                  <li><a href="/logout">Logout</a></li>
+                {% else %}
+                  <li id="login"><a href="/login">Login</a></li>
+                  <li id="register"><a href="/login">Register</a></li>
+                {% endif %}
                 <li role="separator" class="divider"></li>
                 <li><div id="facebook-status"></div></li>
               </ul>
@@ -60,6 +61,7 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
+
     <!-- Show flashed messages -->
   {% with messages = get_flashed_messages() %}
       {% for message in messages %}

@@ -8,60 +8,63 @@
 {% endblock %}
 {% block content %}
 
-<div class="container" style="margin-top: 20px;">
-  <div id="upload-div">
-    <form class="form-upload" action="/upload" enctype="multipart/form-data" method="POST">
-    <h2 class="form-upload-heading">Upload Pictures</h2>
-      <label for="inputName" class="sr-only">Horse's Name</label>
-        <input type="text" id="inputName" name="name" class="form-control" placeholder="Horse's Name (optional)">
-      <div class="form-upload">
-        <label for="inputText" class="sr-only">Herd Area</label>
-          <select name="herd_id" class="form-control selectpicker" id="select-country" data-live-search="true">
-            <option>Select a herd area</option>
-              {% for herd in herds %}
-                <option value="{{herd.herd_id|safe}}" data-tokens="{{herd.herd_name}}" >{{herd.herd_name}}</option>
-              {% endfor %}
-          </select>
-      </div>
-      <label for="inputPC" class="sr-only">Picture Credit</label>
-        <input type="text" id="inputName" name="pc" class="form-control" placeholder="Picture Credit (optional)">
-      <span class="pc-block">
-        *Please include the photographer's name if the picture wasn't taken by you.
-      </span>
-      <div class="input-group">
-        <label class="input-group-btn">
-          <span class="btn btn-lg btn-primary btn-block">
-            Browse&hellip; <input name="file" type="file" style="display: none;" multiple>
-          </span>
-        </label>
-        <input type="text" class="form-control" readonly>
-      </div>
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" id="terms" name="checkbox" value="True"><a href="#" onclick="showTermsConditionsDiv()">I have agreed to the Terms and Conditions</a>
-        </label>
-      </div>
-      <div>
-        <button class="btn btn-lg btn-primary btn-block" id="upload" type="submit" value="upload">Submit</button>
-      </div>
+{% if 'user_id' not in session %}
+  <div class="logout"><div><h3>You'll need to register or login before uploading pictures. </h3></div><br> <button class="btn btn-lg btn-primary btn-block" type="button" onclick="location.href='/login';">Login</button> </div>
+{% else %}
+  <div class="container" style="margin-top: 20px;">
+    <div id="upload-div">
+      <form class="form-upload" action="/upload" enctype="multipart/form-data" method="POST">
+      <h2 class="form-upload-heading">Upload Pictures</h2>
+        <label for="inputName" class="sr-only">Horse's Name</label>
+          <input type="text" id="inputName" name="name" class="form-control" placeholder="Horse's Name (optional)">
+        <div class="form-upload">
+          <label for="inputText" class="sr-only">Herd Area</label>
+            <select name="herd_id" class="form-control selectpicker" id="select-country" data-live-search="true">
+              <option>Select a herd area</option>
+                {% for herd in herds %}
+                  <option value="{{herd.herd_id|safe}}" data-tokens="{{herd.herd_name}}" >{{herd.herd_name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <label for="inputPC" class="sr-only">Picture Credit</label>
+          <input type="text" id="inputName" name="pc" class="form-control" placeholder="Picture Credit (optional)">
+        <span class="pc-block">
+          *Please include the photographer's name if the picture wasn't taken by you.
+        </span>
+        <div class="input-group">
+          <label class="input-group-btn">
+            <span class="btn btn-lg btn-primary btn-block">
+              Browse&hellip; <input name="file" type="file" style="display: none;" multiple>
+            </span>
+          </label>
+          <input type="text" class="form-control" readonly>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="terms" name="checkbox" value="True"><a href="#" onclick="showTermsConditionsDiv()">I have agreed to the Terms and Conditions</a>
+          </label>
+        </div>
+        <div>
+          <button class="btn btn-lg btn-primary btn-block" id="upload" type="submit" value="upload">Submit</button>
+        </div>
+    </div>
+    <div id="termsConditionsDiv" style="display:none;">
+      <h3> Terms and Conditions </h3>
+      <p>
+        By submitting your photo to the Mustang Map page (the “Page”), you hereby agree and consent to:  Mustang Map and its affiliates, subsidiaries, agencies (including advertising agencies) and parents, the “Company”) using the submitted photograph(s), video(s), comment(s) and other accompanying materials (collectively, the “User Content”) for advertising, marketing, promotion and other commercial and business purposes in accordance with these terms and conditions.
+        <br><br>
+        When you upload the User Content to the Page, you hereby grant the Company (and its licensees, advertising agencies and promotion agencies) and the employees, agencies and authorized representatives of each and all of them (collectively, “Authorized Persons”), the unrestricted, perpetual, worldwide, non-transferable, royalty-free right and license to display, exhibit, transmit, reproduce, record, digitize, modify, alter, adapt, create derivative works, exploit and otherwise use and permit others to use the User Content (including, all copyrights in the User Content) in connection with the Company’s marketing, advertising and promotion on Facebook.
+        <br><br>
+        By uploading User Content to the Page, you represent and warrant to the Company that: (1) you are of at least 18 years of age; (2) you own all rights in the User Content or otherwise have the right to submit the User Content to the Company; (3) the User Content does not violate or infringe upon the rights of any third party (including, any rights of copyright, trademark, publicity or privacy); (4) any persons identified in the User Content have consented to the submission of the User Content on the Page and further use of the User Content as contemplated herein; and (5) the Authorized Persons’ use of the User Content in the manner contemplated above and the rights and licenses granted hereunder do not, and will not, violate any right of, or conflict with or violate any right or commitment made to, any third party and no consent or authorization from any third party is required in connection with such use.  You hereby agree to defend, indemnify and hold harmless the Authorized Persons from and against any and losses, and all claims by third parties, resulting from your breach of any of the foregoing representations or warranties.
+        <br><br>
+        Lastly, you hereby waive, release and forever discharge the Company and each Authorized Person and each of their subsidiaries, affiliates, officers, directors, managers, members, shareholders, employees, representatives and agents from any and all rights, claims and liability relating to the use of the User Content in the manner contemplated above including, without limitation, any claims based on the invasion of privacy, commercial use of name or likeness and the right of publicity.
+      </p>
   </div>
-  <div id="termsConditionsDiv" style="display:none;">
-    <h3> Terms and Conditions </h3>
-    <p>
-      By submitting your photo to the Mustang Map page (the “Page”), you hereby agree and consent to:  Mustang Map and its affiliates, subsidiaries, agencies (including advertising agencies) and parents, the “Company”) using the submitted photograph(s), video(s), comment(s) and other accompanying materials (collectively, the “User Content”) for advertising, marketing, promotion and other commercial and business purposes in accordance with these terms and conditions.
-      <br><br>
-      When you upload the User Content to the Page, you hereby grant the Company (and its licensees, advertising agencies and promotion agencies) and the employees, agencies and authorized representatives of each and all of them (collectively, “Authorized Persons”), the unrestricted, perpetual, worldwide, non-transferable, royalty-free right and license to display, exhibit, transmit, reproduce, record, digitize, modify, alter, adapt, create derivative works, exploit and otherwise use and permit others to use the User Content (including, all copyrights in the User Content) in connection with the Company’s marketing, advertising and promotion on Facebook.
-      <br><br>
-      By uploading User Content to the Page, you represent and warrant to the Company that: (1) you are of at least 18 years of age; (2) you own all rights in the User Content or otherwise have the right to submit the User Content to the Company; (3) the User Content does not violate or infringe upon the rights of any third party (including, any rights of copyright, trademark, publicity or privacy); (4) any persons identified in the User Content have consented to the submission of the User Content on the Page and further use of the User Content as contemplated herein; and (5) the Authorized Persons’ use of the User Content in the manner contemplated above and the rights and licenses granted hereunder do not, and will not, violate any right of, or conflict with or violate any right or commitment made to, any third party and no consent or authorization from any third party is required in connection with such use.  You hereby agree to defend, indemnify and hold harmless the Authorized Persons from and against any and losses, and all claims by third parties, resulting from your breach of any of the foregoing representations or warranties.
-      <br><br>
-      Lastly, you hereby waive, release and forever discharge the Company and each Authorized Person and each of their subsidiaries, affiliates, officers, directors, managers, members, shareholders, employees, representatives and agents from any and all rights, claims and liability relating to the use of the User Content in the manner contemplated above including, without limitation, any claims based on the invasion of privacy, commercial use of name or likeness and the right of publicity.
-    </p>
-</div>
 
-<script>
-$(document).ready(function() {
-   $('.selectpicker').selectpicker();
-});
-</script>
-
+  <script>
+  $(document).ready(function() {
+     $('.selectpicker').selectpicker();
+  });
+  </script>
+{% endif %}
 {% endblock %}

@@ -73,31 +73,36 @@ function colorMap(year) {
   });
 }
 
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function makeNationalTextInfoBox(data, div_id) {
     var most_recent_year = 2016;
-    var horses_population = data.PopData[most_recent_year][0];
-    var burros_population = data.PopData[most_recent_year][1];
-    var blm_acreage = data.PopData[most_recent_year][2];
-    var total_acreage = data.PopData[most_recent_year][3];
+    var horses_population = numberWithCommas(data.PopData[most_recent_year][0]);
+    var burros_population = numberWithCommas(data.PopData[most_recent_year][1]);
+    var blm_acreage = numberWithCommas(data.PopData[most_recent_year][2]);
+    var total_acreage = numberWithCommas(data.PopData[most_recent_year][3]);
 
     document.getElementById("text-head").innerHTML = "Mustang Map";
 
-    var paragraph = "As of " + most_recent_year + " there are approximately " +
+    var paragraph = "As of " + most_recent_year + " there were approximately " +
     "67,000 Mustangs and burros living in wild. The Bureau of Land Management " +
     "estimates - controversially - that there should only be 27,000. Every " +
     "year Mustangs are rounded up and placed in holding pens. Some are adopted " +
-    "out, but most remain in holding for the rest of their lives. You can click " +
-    "on the map or one of the buttons below to view population, removals, and adoption information for that state.";
+    "(sold) but most remain in holding for the rest of their lives. You can click " +
+    "on the map or one of the buttons below to view population, removals, and " +
+    "adoption information for that state.";
     document.getElementById("text-paragraph").innerHTML = paragraph;
 }
 
 function makeTextInfoBox(data, div_id) {
     var most_recent_year = 2016;
     var name = data.Name;
-    var horses_population = data.PopData[most_recent_year][0];
-    var burros_population = data.PopData[most_recent_year][1];
-    var blm_acreage = data.PopData[most_recent_year][2];
-    var total_acreage = data.PopData[most_recent_year][3];
+    var horses_population = numberWithCommas(data.PopData[most_recent_year][0]);
+    var burros_population = numberWithCommas(data.PopData[most_recent_year][1]);
+    var blm_acreage = numberWithCommas(data.PopData[most_recent_year][2]);
+    var total_acreage = numberWithCommas(data.PopData[most_recent_year][3]);
 
     document.getElementById("text-head").innerHTML = name;
 
@@ -164,7 +169,7 @@ function makePopulationChart(data, div_id) {
         other_acreage.push(year_object[year][3]);
     }
 
-    if (name == "Nationwide") {
+    if (name === "Nationwide") {
         header = "Population and Acreage " + name + " Over Time";
     } else {
         header = "Population and Acreage in " + name + " Over Time";
@@ -295,7 +300,7 @@ function makeAdoptionChart(data, div_id) {
         burros_removed.push(year_object[year][3]);
     }
 
-    if (area_name == "Nationwide") {
+    if (area_name === "Nationwide") {
         header = "Adoptions and Removals " + area_name + " Over Time";
     } else {
         header = "Adoptions and Removals in " + area_name + " Over Time";
@@ -347,7 +352,6 @@ function makeAdoptionChart(data, div_id) {
             enabled: false
           }
         },
-
         credits: {
             enabled: true,
             text: footnote_list,
