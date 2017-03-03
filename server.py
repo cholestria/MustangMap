@@ -33,18 +33,12 @@ app.jinja_env.undefined = StrictUndefined
 
 api = Api(app)
 
+
 @app.route('/')
 def homepage():
     """Homepage"""
 
-    states_dict = all_state_list()
-    all_pop_dict = all_years_state_comparison()
-    all_pop = json.dumps(all_pop_dict)
-
-    return render_template("googlemapshomepage.html",
-                           secret_key=os.environ['GOOGLE_MAPS_KEY'],
-                           states=states_dict,
-                           all_pop=all_pop)
+    return render_template("splash.html")
 
 
 @app.route('/map')

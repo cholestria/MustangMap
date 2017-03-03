@@ -1,12 +1,15 @@
+//Converts State Name to State ID for converting JSON property values to DB identifiers
 function nameToId(name) {
   var name_dict = {'Arizona': 'AZ', 'California': 'CA', 'Colorado': 'CO', 'Eastern States': 'ES', 'Idaho': 'ID', 'Montana': 'MT', 'National Program': 'NAT', 'New Mexico': 'NM', 'Nevada': 'NV', 'Oregon': 'OR', 'Utah': 'UT', 'Wyoming': 'WY'};
   return name_dict[name];
 }
 
+//shows the registration information on login page
 function showRegistrationDiv(evt) {
     document.getElementById('registrationDiv').style.display = "block";
 }
 
+//allows for earch of the herd names on the herd search page
 function searchHerds() {
     // Declare variables
     var input, filter, group, anchor_list, a, i;
@@ -26,6 +29,7 @@ function searchHerds() {
     }
 }
 
+//finds the center of a geojson feature
 function getCenter(feature) {
     var bounds = new google.maps.LatLngBounds();
     var listOfLatLngs = [];
@@ -39,12 +43,14 @@ function getCenter(feature) {
     return bounds.getCenter();
 }
 
+//loads initial map page with nationwide data
 function pageLoad() {
     makePopulationChart("/totaldata", 'info-box');
     makeAdoptionChart("/totaldata", 'info-box-2');
     makeNationalTextInfoBox("/totaldata", 'text-info-box');
 }
 
+//loads national information onto maps page
 function nationalInfo() {
     makePopulationChart("/totaldata", 'info-box');
     makeAdoptionChart("/totaldata", 'info-box-2');
@@ -53,6 +59,7 @@ function nationalInfo() {
     colorMap(2015);
 }
 
+//used in heatmap feature
 function colorMap(year) {
   var that_year = pop_data[year];
   map.data.forEach(function(feature) {
@@ -73,10 +80,12 @@ function colorMap(year) {
   });
 }
 
+//adds a thousands seperator into the text information
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+//creates a paragraph with national information to be used in the text information div
 function makeNationalTextInfoBox(data, div_id) {
     var most_recent_year = 2016;
     var horses_population = numberWithCommas(data.PopData[most_recent_year][0]);
@@ -96,6 +105,7 @@ function makeNationalTextInfoBox(data, div_id) {
     document.getElementById("text-paragraph").innerHTML = paragraph;
 }
 
+//creates a paragraph with information about a state or herd in the text info box
 function makeTextInfoBox(data, div_id) {
     var most_recent_year = 2016;
     var name = data.Name;
@@ -112,6 +122,7 @@ function makeTextInfoBox(data, div_id) {
     document.getElementById("text-paragraph").innerHTML = paragraph;
 }
 
+//alerts user to ability to click on herds and offers return to national data link
 function makeHerdLink(div_id) {
     document.getElementById("link-text").innerHTML = "To view information about " +
     "each herd area, click on the herd area in the map.<br><br><br>To return to the " +
@@ -122,6 +133,7 @@ function makeHerdLink(div_id) {
     };
 }
 
+//displays a picture in the text info div when there is a picture available for that herd
 function makeHerdPictureBox(data, div_id) {
     var most_recent_year = 2016;
     var picture_object = data.Pictures;
@@ -134,6 +146,7 @@ function makeHerdPictureBox(data, div_id) {
     }
 }
 
+//creates a link in the text info div to view that state's map
 function makeStateLink(data, div_id) {
     var state_id = data.MapDict.state_id;
     var latitude = data.MapDict.latitude;
@@ -149,7 +162,7 @@ function makeStateLink(data, div_id) {
     };
 }
 
-
+//passes json information into the highcharts chart to make the population chart
 function makePopulationChart(data, div_id) {
 
     var name = data.Name; //state or herd name
@@ -188,9 +201,9 @@ function makePopulationChart(data, div_id) {
         title: {
             text: header
         },
-        subtitle: {
-            text: "Source: BLM"
-        },
+        // subtitle: {
+        //     text: "Source: BLM"
+        // },
         legend: {
             // layout: 'vertical',
             // align: 'left',
@@ -276,6 +289,7 @@ function makePopulationChart(data, div_id) {
     });
 }
 
+//passes information from a json into highcharts to make the adoptions chart
 function makeAdoptionChart(data, div_id) {
 
     var header;
@@ -319,9 +333,9 @@ function makeAdoptionChart(data, div_id) {
         title: {
             text: header
         },
-        subtitle: {
-            text: "Source: BLM"
-        },
+        // subtitle: {
+        //     text: "Source: BLM"
+        // },
         legend: {
             itemStyle: {
             fontSize: 'small',

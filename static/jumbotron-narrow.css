@@ -1,3 +1,6 @@
+#image {
+  object-fit: contain;
+}
 .just-padding {
   padding: 15px;
 }

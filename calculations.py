@@ -279,4 +279,3 @@ def all_years_state_comparison():
         all_dict[i.year] = year
 
     return all_dict
-
