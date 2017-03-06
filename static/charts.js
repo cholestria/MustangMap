@@ -1,8 +1,5 @@
-//Converts State Name to State ID for converting JSON property values to DB identifiers
-function nameToId(name) {
-  var name_dict = {'Arizona': 'AZ', 'California': 'CA', 'Colorado': 'CO', 'Eastern States': 'ES', 'Idaho': 'ID', 'Montana': 'MT', 'National Program': 'NAT', 'New Mexico': 'NM', 'Nevada': 'NV', 'Oregon': 'OR', 'Utah': 'UT', 'Wyoming': 'WY'};
-  return name_dict[name];
-}
+//sets global value of 2016 as most recent year
+var most_recent_year = 2016;
 
 //shows the registration information on login page
 function showRegistrationDiv(evt) {
@@ -11,16 +8,14 @@ function showRegistrationDiv(evt) {
 
 //allows for earch of the herd names on the herd search page
 function searchHerds() {
-    // Declare variables
-    var input, filter, group, anchor_list, a, i;
-    input = document.getElementById('myInput');
-    filter = input.value.toUpperCase();
-    group = document.getElementById("list-group");
-    anchor_list = group.getElementsByTagName("a");
+    var input = document.getElementById('myInput');
+    var filter = input.value.toUpperCase();
+    var group = document.getElementById("list-group");
+    var anchor_list = group.getElementsByTagName("a");
 
     // Loop through all list items, and hide those who don't match the search query
-    for (i = 0; i < anchor_list.length; i++) {
-        a = anchor_list[i];
+    for (var i = 0; i < anchor_list.length; i++) {
+        var a = anchor_list[i];
         if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
             anchor_list[i].style.display = "";
         } else {
@@ -44,19 +39,14 @@ function getCenter(feature) {
 }
 
 //loads initial map page with nationwide data
-function pageLoad() {
-    makePopulationChart("/totaldata", 'info-box');
-    makeAdoptionChart("/totaldata", 'info-box-2');
-    makeNationalTextInfoBox("/totaldata", 'text-info-box');
-}
+// function pageLoad() {
+//     makePopulationChart("/totaldata", 'info-box');
+//     makeAdoptionChart("/totaldata", 'info-box-2');
+//     loadNationalTextInfoBox("/totaldata", 'text-info-box');
+// }
 
-//loads national information onto maps page
-function nationalInfo() {
-    // $.get("/totaldata", function(data) {
-    //     makePopulationChart(data, 'info-box');
-    //     makeAdoptionChart(data, 'info-box-2');
-    //     makeNationalTextInfoBox(data, 'text-info-box');
-    // });
+//loads Heat Map
+function displayHeatMap() {
     loadNationalFeatures();
     map.panTo({lat: 40, lng: -115});
     colorMap(2016);
@@ -66,17 +56,20 @@ function nationalInfo() {
 function colorMap(year) {
   $.get("/popbyyear", function(popdata) {
       var that_year = popdata[year];
+      var large_population = 10000;
+      var medium_population = 5000;
+      var small_population = 2000;
       map.data.forEach(function(feature) {
-          var state_id = nameToId(feature.getProperty('NAME'));
+          var state_id = feature.getProperty('STATEID');
           var population_data = that_year[state_id];
           var horse_pop = population_data["horse"];
           var burro_pop = population_data["burro"];
           var sum_pop = horse_pop + burro_pop;
-          if (sum_pop > 10000) {
+          if (sum_pop > large_population) {
             map.data.overrideStyle(feature, {fillColor: 'red'});
-          } else if (sum_pop > 5000) {
+          } else if (sum_pop > medium_population) {
             map.data.overrideStyle(feature, {fillColor: 'orange'});
-          } else if (sum_pop > 2000) {
+          } else if (sum_pop > small_population) {
             map.data.overrideStyle(feature, {fillColor: 'yellow'});
           } else {
             map.data.overrideStyle(feature, {fillColor: 'green'});
@@ -91,8 +84,7 @@ function numberWithCommas(x) {
 }
 
 //creates a paragraph with national information to be used in the text information div
-function makeNationalTextInfoBox(data, div_id) {
-    var most_recent_year = 2016;
+function loadNationalTextInfoBox(data, div_id) {
     var horses_population = numberWithCommas(data.PopData[most_recent_year][0]);
     var burros_population = numberWithCommas(data.PopData[most_recent_year][1]);
     var blm_acreage = numberWithCommas(data.PopData[most_recent_year][2]);
@@ -112,7 +104,6 @@ function makeNationalTextInfoBox(data, div_id) {
 
 //creates a paragraph with information about a state or herd in the text info box
 function makeTextInfoBox(data, div_id) {
-    var most_recent_year = 2016;
     var name = data.Name;
     var raw_horse_population = data.PopData[most_recent_year][0];
     var raw_burro_population = data.PopData[most_recent_year][1];
@@ -136,8 +127,9 @@ function makeTextInfoBox(data, div_id) {
 
     document.getElementById("text-head").innerHTML = name;
 
-    var paragraph = "As of " + most_recent_year + ", " + name + " had " + pop_sentence + " in the wild. The total acreage for this area is " + total_acreage +
-    " acres." ;
+    var paragraph = "As of " + most_recent_year + ", " + name + " had " +
+      pop_sentence + " in the wild. The total acreage for this area is " +
+      total_acreage + " acres." ;
 
     document.getElementById("text-paragraph").innerHTML = paragraph;
 }
@@ -157,7 +149,6 @@ function makeHerdLink(div_id) {
 
 //displays a picture in the text info div when there is a picture available for that herd
 function makeHerdPictureBox(data, div_id) {
-    var most_recent_year = 2016;
     var picture_object = data.Pictures;
     var filename = Object.keys(picture_object);
     if (filename == "none") {
@@ -226,16 +217,7 @@ function makePopulationChart(data, div_id) {
         title: {
             text: header
         },
-        // subtitle: {
-        //     text: "Source: BLM"
-        // },
         legend: {
-            // layout: 'vertical',
-            // align: 'left',
-            // verticalAlign: 'top',
-            // // x: 400,
-            // y: 50,
-            // floating: true,
             borderWidth: 0,
             backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
         },
@@ -358,19 +340,10 @@ function makeAdoptionChart(data, div_id) {
         title: {
             text: header
         },
-        // subtitle: {
-        //     text: "Source: BLM"
-        // },
         legend: {
             itemStyle: {
             fontSize: 'small',
             },
-            // layout: 'vertical',
-            // align: 'left',
-            // verticalAlign: 'top',
-            // x: 0,
-            // y: 50,
-            // floating: true,
             borderWidth: 0,
             backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
         },
@@ -394,7 +367,7 @@ function makeAdoptionChart(data, div_id) {
         credits: {
             enabled: true,
             text: footnote_list,
-            href: 'https://www.blm.gov/wo/st/en/prog/whbprogram/herd_management/Data.html',
+            href: '/about',
             position: {
                 align: 'left',
                 x: 20

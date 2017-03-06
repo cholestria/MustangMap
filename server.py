@@ -55,7 +55,6 @@ def newhomepage():
     """Homepage"""
 
     states_list = creates_states_list()
-    all_pop_dict = all_years_state_comparison()
     states_dict = json.dumps(states_list)
 
     return render_template("homepage.html",

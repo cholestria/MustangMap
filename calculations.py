@@ -1,4 +1,4 @@
-from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData, User, Pictures
+from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData, Pictures
 from flask import url_for
 import random
 
@@ -22,8 +22,6 @@ def all_state_list():
 def state_map_dict(st):
     """Makes States Dictionary with map information"""
 
-    #used in master_state_dict(st)
-
     state = State.query.filter(State.state_id == st).options(db.joinedload('maps')).first()
     map_dict = state.dictionary_representation()
 
@@ -34,8 +32,6 @@ def state_map_dict(st):
 
 def ha_data_by_state(st):
     """Returns a dictionary of population and acreage per HA within a state"""
-
-    #used in state_pop_dict(st)
 
     herds = HAData.query.options(db.joinedload('herd_areas')).all()
     dictionary = {}
@@ -51,8 +47,6 @@ def ha_data_by_state(st):
 
 def find_pictures_by_herd_id(herd_id):
     "Returns pictures of Mustangs from a particular herd area"
-
-    #used in herd_area_data
 
     picture_info = Pictures.query.filter(Pictures.herd_id == herd_id).options(db.joinedload('users')).all()
     length = len(picture_info)
@@ -75,8 +69,6 @@ def find_pictures_by_herd_id(herd_id):
 
 def ha_data_for_ha_chart(herd_id):
     """Returns the HA dictionary with additonal json information"""
-
-    #used in hachartdata jsonify
 
     a_herd = HAData.query.filter(HAData.herd_id == herd_id).options(db.joinedload('herd_areas')).all()
     herd_name = a_herd[0].herd_areas.herd_name
@@ -111,8 +103,6 @@ def ha_data_for_ha_chart(herd_id):
 def state_adopt_removal_data(st):
     """Returns per year removal and adoption info for a state"""
 
-    #used in master_state_dict(st)
-
     all_years = StateData.query.filter(StateData.state_id == st).options(db.joinedload('state')).all()
 
     state_dict = {}
@@ -133,8 +123,6 @@ def state_adopt_removal_data(st):
 
 def state_pop_dict(st):
     """Returns dictionary of state population and acreage sums from herd data"""
-
-    #used in master_state_dict(st)
 
     all_herds = ha_data_by_state(st)
     pop_dict = {}
@@ -162,8 +150,6 @@ def state_pop_dict(st):
 def master_state_dict(st):
     """Creates a master dictionary that contains all state information"""
 
-    #returned as json for statedata/st
-
     all_years = StateData.query.filter(StateData.state_id == st).options(db.joinedload('state')).all()
     state_name = all_years[0].state.name
 
@@ -183,8 +169,6 @@ def master_state_dict(st):
 
 def nationwide_population_totals():
     """Returns nationwide population and acreage data for all years"""
-
-    #used in the nationwide master dictionary
 
     pop_data = HAData.query.options(db.joinedload('herd_areas')).all()
     pop_dict = {}
@@ -210,8 +194,6 @@ def nationwide_population_totals():
 
 def nationwide_pop_ar_totals():
     """Returns a master dictionary of nationwide adoptions and removals and populations"""
-
-    #used in /totaldata json
 
     all_data = StateData.query.options(db.joinedload('state')).all()
     adopt_dict = {}
@@ -253,8 +235,6 @@ def nationwide_pop_ar_totals():
 
 def all_years_state_comparison():
     """Returns all population data for all years and all states"""
-
-    #used in the heat maps function
 
     pop_data = HAData.query.options(db.joinedload('herd_areas')).all()
     all_dict = {}

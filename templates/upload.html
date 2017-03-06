@@ -17,7 +17,6 @@
       <h2 class="form-upload-heading">Upload Pictures</h2>
         <label for="inputName" class="sr-only">Horse's Name</label>
           <input type="text" id="inputName" name="name" class="form-control" placeholder="Horse's Name (optional)">
-        <div class="form-upload">
           <label for="inputText" class="sr-only">Herd Area</label>
             <select name="herd_id" class="form-control selectpicker" id="select-country" data-live-search="true">
               <option>Select a herd area</option>
@@ -25,7 +24,6 @@
                   <option value="{{herd.herd_id|safe}}" data-tokens="{{herd.herd_name}}" >{{herd.herd_name}}</option>
                 {% endfor %}
             </select>
-        </div>
         <label for="inputPC" class="sr-only">Picture Credit</label>
           <input type="text" id="inputName" name="pc" class="form-control" placeholder="Picture Credit (optional)">
         <span class="pc-block">
