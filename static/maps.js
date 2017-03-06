@@ -14,13 +14,13 @@ function initMap() {
 
   // Set the stroke width, and fill color for each polygon
   map.data.setStyle({
-    fillColor: 'blue',
+    fillColor: 'SlateGray',
     strokeWeight: 1
   });
 
   // Set the fill color to purple when the feature is clicked.
   map.data.addListener('click', function(event) {
-    map.data.overrideStyle(event.feature, {fillColor: 'purple'});
+    map.data.overrideStyle(event.feature, {fillColor: 'blue'});
     // map.setZoom(5);
     var center = getCenter(event.feature);
     map.panTo(center);

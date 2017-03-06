@@ -15,7 +15,8 @@ from werkzeug.utils import secure_filename
 UPLOAD_FOLDER = 'uploads/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
-from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea, HAData, HMAData, User, Facebook, Pictures
+from model import connect_to_db, db, State, StateMapNames, StateData, HerdArea
+from model import HAData, HMAData, User, Facebook, Pictures
 from calculations import all_state_list, all_years_state_comparison
 from mustangapi import PopByYearAPI, HerdAreaDataAPI, StateDataAPI, TotalDataAPI
 
@@ -25,11 +26,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
 
-# Normally, if you use an undefined variable in Jinja2, it fails
-# silently. This is horrible. Fix this so that, instead, it raises an
-# error.
+# Normally, if you use an undefined variable in Jinja2, it fails silently.
+# This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
-
 
 api = Api(app)
 
@@ -82,7 +81,7 @@ def handle_login():
     if bcrypt.hashpw(password, hypothetical_user.password) == hypothetical_user.password:
         session['user_id'] = hypothetical_user.user_id
         flash("You're now logged in.")
-        return redirect("/map")
+        return redirect("/upload")
     else:
         flash("Wrong password")
         return login()
@@ -118,17 +117,18 @@ def logout():
     return login()
 
 
-@app.route('/pictures')
+@app.route('/picturepage/<herd_id>')
 def pictures():
+    """Shows all Pictures for a Herd Area"""
 
     return render_template("pictures.html")
 
 
 @app.route('/upload', methods=['GET'])
 def upload():
+    """Returns the Upload Page"""
 
     herds = [each.dictionary_representation() for each in HerdArea.query.all()]
-
 
     return render_template('upload.html',
                             herds=herds)
@@ -141,6 +141,7 @@ def allowed_file(filename):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    """Uploads an Image to the Database"""
     #check if the post request includes the file part
     if 'file' not in request.files:
         flash('No file part')
@@ -174,6 +175,7 @@ def upload_file():
 
 @app.route('/pictures/<filename>')
 def uploaded_file(filename):
+    """Image Path"""
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
 
@@ -190,6 +192,13 @@ def herd_search():
     return render_template("herdsearch.html",
                            herds=herds,
                            states=states_list)
+
+
+@app.route('/about')
+def about():
+    """About Page """
+
+    return render_template("about.html")
 
 
 api.add_resource(TotalDataAPI, '/totaldata')

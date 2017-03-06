@@ -96,8 +96,6 @@ def ha_data_for_ha_chart(herd_id):
             burro_population = 0
             if i.year not in footnote_dict:
                 footnote_dict[i.year] = "no burro population data reported for this year"
-            else:
-                footnote_dict[i.year].append("no burro population data reported for this year")
         if i.year not in ha_pop_dict:
             ha_pop_dict[(i.year)] = [horse_population, burro_population, blm_acreage, other_acreage]
 

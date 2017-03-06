@@ -187,11 +187,11 @@ class HMAData(db.Model):
     __table_args__ = (db.PrimaryKeyConstraint('herd_id', 'year'),
     )
 
-    herd_area = db.relationship('HerdArea', backref=db.backref('hma_data_by_year'))
+    herd_areas = db.relationship('HerdArea', backref=db.backref('hma_data_by_year'))
 
     def __repr__(self):
         """Prints herd area data"""
-        return "\n<HMAData %s -- %s>" % (self.herd_id, self.name)
+        return "\n<HMAData %s for %s -- horse high aml: %s burrow high aml: %s>" % (self.herd_id, self.year, _by, self.horse_aml_high, self.burro_aml_high )
 
     def dictionary_representation(self):
 

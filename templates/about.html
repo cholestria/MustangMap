@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Mustang Map{% endblock %}
+{% block head %}
+  {{ super() }}
+  <script>
+  </script>
+{% endblock %}
+{% block content %}
+
+  <div class="jumbotron">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="about-image">
+        </div>
+      </div>
+    </div>
+  </div> <!-- /jumbotron -->
+
+  <div class="about-text">
+    <h3>About</h3>
+    <p>
+        Mustang Map provides a visualization of data provided by the Bureau of Land Management's <a href="">Mustang Program</a>. The BLM provides this data in the form of pdf - sometimes scans of printed pdfs. Mustang Map's database is based on the provided data, but may have small errors due to potential pdf to text conversion issues. This site is intended for visualization of data and should not be considered 100% accurate.
+    </p>
+    <h3>Pictures</h3>
+    <p>
+        All pictures on this site are provided by users who have certified that they have the right to distribute these pictures. If you have found a picture that belongs to you and want it removed, please (((insert email link here))) Mustang Map.
+    </p>
+      <h3>RESTful API</h3>
+    <p>
+        The data visualized in Mustang Map is available as a RESTful API.<br>
+        For information on using this API, please see the documentation <a href="/githublink">here.</a><br>
+    </p>
+  </div>
+
+{% endblock %}

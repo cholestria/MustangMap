@@ -13,12 +13,6 @@ def run(case):
     suite = unittest.TestLoader().loadTestsFromTestCase(case)
     unittest.TextTestRunner(verbosity=2).run(suite)
 
-# class TestFoo(unittest.TestCase):
-#     def test_bar(self):
-#         raise ValueError("foo")
-# run(TestFoo)
-
-
 
 class TestAssert(unittest.TestCase):
     def test_assert(self):
@@ -69,40 +63,4 @@ class TestAssert5(unittest.TestCase):
 run(TestAssert)
 
 
-# class TestAssert2(unittest.TestCase):
-#     def test_assert2(self):
-#         self.assertEquals([1,2],[1,3])
-# run(TestAssert2)
-
-
-# class TestAssert3(unittest.TestCase):
-#     def test_assert(self):
-#         self.assertLess(2,1)
-# run(TestAssert3)
-
-# class TestDivisible(unittest.TestCase):
-#     def test_divisible(self):
-#         a = 3
-#         b = 2
-#         self.assertTrue(a % b == 0)
-# run(TestDivisible)
-
-# class TestRaises(unittest.TestCase):
-#     def test_raises(self):
-#         with self.assertRaises(ValueError):
-#             raise(KeyError)
-
-# class TestList(unittest.TestCase):
-#     def setUp(self):
-#         @self.addCleanup
-#         def emptyList():
-#             print("cleanup")
-#             self.thingy[:] = []
-#             print(self.thingy)
-#         self.thingy = [1,2]
-#     def test_1(self):
-#         self.assertEquals(2, self.thingy.pop(0))
-#     def test_2(self):
-#         self.assertEquals(1, self.thingy.pop(1))
-# run (TestList)
 

@@ -109,21 +109,38 @@ function makeNationalTextInfoBox(data, div_id) {
 function makeTextInfoBox(data, div_id) {
     var most_recent_year = 2016;
     var name = data.Name;
-    var horses_population = numberWithCommas(data.PopData[most_recent_year][0]);
-    var burros_population = numberWithCommas(data.PopData[most_recent_year][1]);
+    var raw_horse_population = data.PopData[most_recent_year][0];
+    var raw_burro_population = data.PopData[most_recent_year][1];
+    var horse_population = numberWithCommas(raw_horse_population);
+    var burro_population = numberWithCommas(data.PopData[most_recent_year][1]);
     var blm_acreage = numberWithCommas(data.PopData[most_recent_year][2]);
     var total_acreage = numberWithCommas(data.PopData[most_recent_year][3]);
+    var pop_sentence;
+
+
+    if (raw_horse_population === 0 && raw_burro_population === 0) {
+        pop_sentence = "no Mustangs or burros";
+    } else if (raw_horse_population === 0 && raw_burro_population > 0) {
+        pop_sentence = "no Mustangs and " + burro_population + " burros";
+    } else if (raw_horse_population > 0 && raw_burro_population === 0) {
+        pop_sentence = horse_population + " Mustangs and no burros";
+    } else {
+        pop_sentence = horse_population + " Mustangs and " + burro_population + " burros";
+    }
+    document.getElementById("link-text").style.display = "block";
 
     document.getElementById("text-head").innerHTML = name;
 
-    var paragraph = "As of " + most_recent_year + ", " + name + " had " + horses_population +
-    " Mustangs and " + burros_population + " burros in the wild spread over " + total_acreage +
-    " acres. " ;
+    var paragraph = "As of " + most_recent_year + ", " + name + " had " + pop_sentence + " in the wild. The total acreage for this area is " + total_acreage +
+    " acres." ;
+
     document.getElementById("text-paragraph").innerHTML = paragraph;
 }
 
 //alerts user to ability to click on herds and offers return to national data link
 function makeHerdLink(div_id) {
+    document.getElementById("link-text").style.display = "block";
+
     document.getElementById("link-text").innerHTML = "To view information about " +
     "each herd area, click on the herd area in the map.<br><br><br>To return to the " +
     "national map <a class='btn' id='state-link'>click here.</a>";
@@ -141,6 +158,7 @@ function makeHerdPictureBox(data, div_id) {
     if (filename == "none") {
         document.getElementById("image-div").style.display = "none";
     } else {
+    document.getElementById("link-text").style.display = "none";
     document.getElementById("image-div").style.display = "block";
     document.getElementById("image").src = "pictures/"+filename;
     }

@@ -26,6 +26,7 @@
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <button class="btn btn-lg btn-primary btn-block" type="button" onclick="showRegistrationDiv()">Register for a new account</button>
+        <div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>
       </form>
         <div id="registrationDiv" style="display:none;">
           <form class="form-register" action="/register" method="POST">
@@ -42,22 +43,5 @@
         </div>
         {% endif %}
     </div> <!-- /container -->
-
-<!-- will need to use this: FB.getUserID() -->
-
-
-<!--
-  Below we include the Login Button social plugin. This button uses
-  the JavaScript SDK to present a graphical Login button that triggers
-  the FB.login() function when clicked.
--->
-
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
-
-<script>
-
-</script>
-
 
 {% endblock %}
