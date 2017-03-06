@@ -3,8 +3,6 @@
 {% block head %}
   {{ super() }}
   <script>
-  var pop_data = {{all_pop|safe}};
-  var year = 2015;
   var state_info_dict = {{states_dict|safe}};
   </script>
 {% endblock %}
@@ -30,7 +28,8 @@
                 </div>
               </div>
               <div class="row" name="nationwide">
-                  <a class="btn btn-lg btn-success" role="button" onclick="loadNationalFeatures()">View National Data</a><br>
+                  <a class="btn btn-lg btn-success" role="button" onclick="loadNationalFeatures()">View National Data</a>
+                  <a class="btn btn-lg btn-success" role="button" onclick="nationalInfo()">Population Density Map</a><br>
               </div>
               <div class="row" name="state-buttons">
                 <div id="state-links" class="col-lg-12">

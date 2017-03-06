@@ -52,31 +52,36 @@ function pageLoad() {
 
 //loads national information onto maps page
 function nationalInfo() {
-    makePopulationChart("/totaldata", 'info-box');
-    makeAdoptionChart("/totaldata", 'info-box-2');
-    makeNationalTextInfoBox("/totaldata", 'text-info-box');
+    // $.get("/totaldata", function(data) {
+    //     makePopulationChart(data, 'info-box');
+    //     makeAdoptionChart(data, 'info-box-2');
+    //     makeNationalTextInfoBox(data, 'text-info-box');
+    // });
+    loadNationalFeatures();
     map.panTo({lat: 40, lng: -115});
-    colorMap(2015);
+    colorMap(2016);
 }
 
 //used in heatmap feature
 function colorMap(year) {
-  var that_year = pop_data[year];
-  map.data.forEach(function(feature) {
-      var state_id = nameToId(feature.getProperty('NAME'));
-      var population_data = that_year[state_id];
-      var horse_pop = population_data["horse"];
-      var burro_pop = population_data["burro"];
-      var sum_pop = horse_pop + burro_pop;
-      if (sum_pop > 10000) {
-        map.data.overrideStyle(feature, {fillColor: 'red'});
-      } else if (sum_pop > 5000) {
-        map.data.overrideStyle(feature, {fillColor: 'orange'});
-      } else if (sum_pop > 2000) {
-        map.data.overrideStyle(feature, {fillColor: 'yellow'});
-      } else {
-        map.data.overrideStyle(feature, {fillColor: 'green'});
-      }
+  $.get("/popbyyear", function(popdata) {
+      var that_year = popdata[year];
+      map.data.forEach(function(feature) {
+          var state_id = nameToId(feature.getProperty('NAME'));
+          var population_data = that_year[state_id];
+          var horse_pop = population_data["horse"];
+          var burro_pop = population_data["burro"];
+          var sum_pop = horse_pop + burro_pop;
+          if (sum_pop > 10000) {
+            map.data.overrideStyle(feature, {fillColor: 'red'});
+          } else if (sum_pop > 5000) {
+            map.data.overrideStyle(feature, {fillColor: 'orange'});
+          } else if (sum_pop > 2000) {
+            map.data.overrideStyle(feature, {fillColor: 'yellow'});
+          } else {
+            map.data.overrideStyle(feature, {fillColor: 'green'});
+          }
+      });
   });
 }
 
@@ -142,8 +147,8 @@ function makeHerdLink(div_id) {
     document.getElementById("link-text").style.display = "block";
 
     document.getElementById("link-text").innerHTML = "To view information about " +
-    "each herd area, click on the herd area in the map.<br><br><br>To return to the " +
-    "national map <a class='btn' id='state-link'>click here.</a>";
+    "each herd area, click on the herd area in the map.<br><br><br>" +
+    "<a class='btn' id='state-link'>Click here</a> to return to the national map.";
 
     document.getElementById("state-link").onclick = function(event) {
     loadNationalFeatures();
@@ -166,14 +171,16 @@ function makeHerdPictureBox(data, div_id) {
 
 //creates a link in the text info div to view that state's map
 function makeStateLink(data, div_id) {
+    var state_name = data.Name;
     var state_id = data.MapDict.state_id;
     var latitude = data.MapDict.latitude;
     var longitude = data.MapDict.longitude;
     var zoom = data.MapDict.zoom;
     var map_names = data.MapDict.map_names;
 
-    document.getElementById("link-text").innerHTML = "To see a map of all of the" +
-    " herd areas in this state <a class='btn' id='state-link'>click here.</a>";
+    document.getElementById("link-text").innerHTML =
+    "<a class='btn' id='state-link'>Click here</a> to see a map of all of the" +
+    " herd areas in " + state_name + ".";
 
     document.getElementById("state-link").onclick = function(event) {
         loadStateFeatures(state_id, map_names, {"lat": latitude, "lng": longitude}, zoom);

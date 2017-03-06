@@ -14,7 +14,7 @@ function initMap() {
 
   // Set the stroke width, and fill color for each polygon
   map.data.setStyle({
-    fillColor: 'SlateGray',
+    fillColor: 'darkgreen',
     strokeWeight: 1
   });
 

@@ -1,4 +1,4 @@
-"""Mustang Data."""
+"""Primary server file for Mustang Map."""
 import os
 import json
 import bcrypt
@@ -40,31 +40,33 @@ def homepage():
     return render_template("splash.html")
 
 
-@app.route('/map')
-def newhomepage():
-    """Homepage"""
+def creates_states_list():
+    """Creates states list"""
 
     states_list = all_state_list()
     for state in states_list:
         state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
+
+    return states_list
+
+
+@app.route('/map')
+def newhomepage():
+    """Homepage"""
+
+    states_list = creates_states_list()
     all_pop_dict = all_years_state_comparison()
-    all_pop = json.dumps(all_pop_dict)
     states_dict = json.dumps(states_list)
 
     return render_template("homepage.html",
                            secret_key=os.environ['GOOGLE_MAPS_KEY'],
                            states=states_list,
-                           all_pop=all_pop,
                            states_dict=states_dict)
 
 
 @app.route('/login', methods=["GET"])
 def login():
     """Login Page"""
-
-    states_list = all_state_list()
-    for state in states_list:
-        state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
 
     return render_template("login.html")
 
@@ -185,9 +187,7 @@ def herd_search():
     """Herd List and Search page"""
 
     herds = [each.dictionary_representation() for each in HerdArea.query.all()]
-    states_list = all_state_list()
-    for state in states_list:
-        state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
+    states_list = creates_states_list()
 
     return render_template("herdsearch.html",
                            herds=herds,

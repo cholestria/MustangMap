@@ -128,7 +128,7 @@ def state_adopt_removal_data(st):
         if i.year not in state_dict:
             state_dict[(i.year)] = [i.horse_adoptions, i.burro_adoptions, horse_removals, i.burro_removals]
 
-    return state_dict
+    return state_dict, footnote_dict
 
 
 def state_pop_dict(st):
@@ -168,8 +168,7 @@ def master_state_dict(st):
     state_name = all_years[0].state.name
 
     pop_dict = state_pop_dict(st)
-    adopt_dict = state_adopt_removal_data(st)
-    footnote_dict = {}  #emtpy for now
+    adopt_dict, footnote_dict = state_adopt_removal_data(st)
     map_dict = state_map_dict(st)
 
     master_state_dict = {"Name": state_name,
