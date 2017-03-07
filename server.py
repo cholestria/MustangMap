@@ -45,7 +45,7 @@ def creates_states_list():
 
     states_list = all_state_list()
     for state in states_list:
-        state["file_names"] = [url_for("static", filename=each) for each in state["file_names"]]
+        state["file_names"] = [url_for("static", filename="geodata/"+each) for each in state["file_names"]]
 
     return states_list
 

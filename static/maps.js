@@ -77,7 +77,7 @@ function loadNationalFeatures() {
   map.setZoom(4);
   map.setCenter({lat: 40, lng: -115});
 
-  map.data.loadGeoJson('static/states.json');
+  map.data.loadGeoJson('static/geodata/states.json');
 
   $.get("/totaldata", function(popdata) {
     makePopulationChart(popdata, 'info-box');

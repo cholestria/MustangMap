@@ -25,7 +25,7 @@ def state_map_dict(st):
     state = State.query.filter(State.state_id == st).options(db.joinedload('maps')).first()
     map_dict = state.dictionary_representation()
 
-    map_dict["map_names"] = [url_for("static", filename=each.map_name) for each in state.maps]
+    map_dict["map_names"] = [url_for("static", filename="geodata/"+each.map_name) for each in state.maps]
 
     return map_dict
 
