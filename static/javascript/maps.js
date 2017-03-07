@@ -157,6 +157,21 @@ function loadHerdFeatures(state_id, file_names, center, zoom, herd_id) {
   });
 
   loadHerdCharts(herd_id);
+
+    //if viewing a state map, clicks on a herd area load herd info in charts
+  clickHandler = function(event) {
+    //most states have 2 maps - one for HA and one for HMA
+    var herd_id = event.feature.getProperty('HA_NO');
+    if (!herd_id) {
+      herd_id = event.feature.getProperty('HMA_ID');
+    }
+    $.get("/hachartdata/"+herd_id, function(popdata) {
+      makePopulationChart(popdata, 'info-box');
+      makeTextInfoBox(popdata, 'text-info-box');
+      makeHerdPictureBox(popdata, 'image-div');
+      document.getElementById("link-text").innerHTML = "";
+    });
+  };
 }
 
 //used in loadHerdFeatures
