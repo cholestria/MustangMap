@@ -4,8 +4,6 @@ Mustang Map visualizes government data on Mustangs and presents a user-friendly 
 
 Learn more about the developer [here](https://oliviaknott.com).
 
-![](http://g.recordit.co/Lk5fj3QNeR.gif)
-
 ## Contents
 - [Technologies Used](#technologiesused)
 - [Features](#features)
