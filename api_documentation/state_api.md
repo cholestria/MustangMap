@@ -23,17 +23,52 @@
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** `{ id : "OR", name : "Oregon" }`
+    **Content:** `{
+    "AdoptData": {
+        "2014": [
+            125,
+            40,
+            51,
+            8
+        ],
+        "2015": [
+            140,
+            19,
+            210,
+            3
+        ]
+    },
+    "Footnotes": {},
+    "MapDict": {
+        "latitude": 43.5,
+        "longitude": -119.8,
+        "map_names": [
+            "/static/geodata/oregon_ha.geojson",
+            "/static/geodata/oregon_hma.geojson"
+        ],
+        "name": "Oregon",
+        "state_id": "OR",
+        "zoom": 7
+    },
+    "Name": "Oregon",
+    "PopData": {
+        "2015": [
+            4327,
+            49,
+            3608660,
+            4312356
+        ],
+        "2016": [
+            3785,
+            56,
+            3608660,
+            4312356
+        ]
+    }
+}`
 
 * **Error Response:**
 
-  * **Code:** 404 NOT FOUND <br />
-    **Content:** `{ error : "User doesn't exist" }`
-
-  OR
-
-  * **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{ error : "You are unauthorized to make this request." }`
 
 * **Sample Call:**
 

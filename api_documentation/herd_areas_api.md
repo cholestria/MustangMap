@@ -23,17 +23,34 @@
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** `{ id : "OR0006", Name : "Palomino Buttes" }`
+    **Content:** `{
+    "Footnotes": {},
+    "Name": "Palomino Buttes",
+    "Pictures": {
+        "f967e5da-8319-463c-852d-3faf0994f0b8.jpg": {
+            "credit": "Richelle Ruhlin Wilson",
+            "horse": "Aspen",
+            "user": "Olivia Knott"
+        }
+    },
+    "PopData": {
+        "2015": [
+            78,
+            0,
+            86191,
+            98810
+        ],
+        "2016": [
+            131,
+            0,
+            86191,
+            98810
+        ]
+    }
+}`
 
 * **Error Response:**
 
-  * **Code:** 404 NOT FOUND <br />
-    **Content:** `{ error : "User doesn't exist" }`
-
-  OR
-
-  * **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{ error : "You are unauthorized to make this request." }`
 
 * **Sample Call:**
 

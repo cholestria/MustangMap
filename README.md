@@ -4,6 +4,7 @@ Mustang Map visualizes government data on Mustangs and presents a user-friendly 
 
 Learn more about the developer [here](https://oliviaknott.com).
 
+![](http://g.recordit.co/Lk5fj3QNeR.gif)
 
 ## Contents
 - [Technologies Used](#technologiesused)
@@ -36,14 +37,14 @@ Learn more about the developer [here](https://oliviaknott.com).
 - [X] Highcharts renders charts depicting data
 - [X] Flask app renders HTML and handles AJAX requests to the database
 - [X] Flask-RESTful returns a RESTful api of database information as jsons
-- [X] Bcrypt allows users to create accounts and login securely
+- [X] Bcrypt is used to ensure the security of user accounts
 - [X] Flask-Images handles image upload to the database and serves images to the site
 - [X] Javascript functions handle search and AJAX calls
 
 *Future*
 
-- [ ] Allow users to manage their photos.
-- [ ] Find additional geojsons.
+- [ ] Allow users to manage their photos
+- [ ] Incorporate additional geographic data
 
 
 ## <a name="maps"></a>Maps
@@ -58,7 +59,7 @@ The data visualizations generated on Mustang Map use the graphing library Highch
 
 ## <a name="login"></a>Account Creation, Login, and Image Display
 
-Users can create an account and login in order to upload images which are used in the herd area information display. Password encryption is handled by bcrypt. Users can also chose to login with Facebook's login API. Backend functions ensure that the files uploaded are picture files. For herd areas with multiple images, a random choice algorithm serves one picture per herd area on a given AJAX call.
+Users can create an account and log in in order to upload images which are used in the herd area information display. Password encryption is handled by bcrypt. Users can also chose to login with Facebook's login API. Backend functions ensure that the files uploaded are picture files. For herd areas with multiple images, a random choice algorithm serves one picture per herd area on a given AJAX call.
 
 
 ## <a name="data"></a>Data
@@ -68,4 +69,4 @@ Mustang Map's data comes from the Bureau of Land Management's Mustang Program, a
 
 ## <a name="api"></a>API
 
-Mustang Map's data is returned as an API which is available to third-party applications. For more information on using the Mustang Map API, please see the api [documentation](https://github.com/cholestria/MustangMap/tree/master/api_documentation).
+Mustang Map provides an API which is available to third-party applications. For more information on using the Mustang Map API, please see the api [documentation](https://github.com/cholestria/MustangMap/tree/master/api_documentation).
