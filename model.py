@@ -1,6 +1,7 @@
 """Models and database functions for MustangMap project."""
 
 from flask_sqlalchemy import SQLAlchemy
+from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
 
 db = SQLAlchemy()
 
@@ -201,15 +202,24 @@ class HMAData(db.Model):
                 "hma_other_acres": self.hma_other_acres,
                 }
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     """User of MustangMap website"""
 
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.Text, nullable=False)
+
+    #User information
+    username = db.Column(db.String(50), nullable=False, unique=True)
+    password = db.Column(db.String(64), nullable=False, server_default='')
+
+    #user email information
     email = db.Column(db.String(64), nullable=True)
-    password = db.Column(db.String(64), nullable=True)
+    confirmed_at = db.Column(db.DateTime())
+
+    #user_information
+    name = db.Column(db.Text, nullable=False)
+    active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0')
 
     def __repr__(self):
         """Prints user information"""

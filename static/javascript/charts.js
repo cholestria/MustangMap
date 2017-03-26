@@ -169,6 +169,11 @@ function makeStateLink(data, div_id) {
     var zoom = data.MapDict.zoom;
     var map_names = data.MapDict.map_names;
 
+    if (state_name == 'California' || state_name == 'Idaho' || state_name == 'Montana' ||
+     state_name == 'Utah' || state_name == 'Wyoming' || state_name == 'New Mexico') {
+        document.getElementById("link-text").innerHTML = "Individual herd area " +
+        "maps are not yet available for " + state_name + " Please check back later.";
+    } else {
     document.getElementById("link-text").innerHTML =
     "<a class='btn' id='state-link'>Click here</a> to see a map of all of the" +
     " herd areas in " + state_name + ".";
@@ -176,6 +181,7 @@ function makeStateLink(data, div_id) {
     document.getElementById("state-link").onclick = function(event) {
         loadStateFeatures(state_id, map_names, {"lat": latitude, "lng": longitude}, zoom);
     };
+    }
 }
 
 //passes json information into the highcharts chart to make the population chart
