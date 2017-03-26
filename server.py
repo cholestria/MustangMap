@@ -239,11 +239,9 @@ def create_app():
     return app
 
 
-def run_app():
-    app = create_app()
-    connect_to_db(app)
-    setup_api(app)
-    app.run()
+app = create_app()
+connect_to_db(app)
+setup_api(app)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
@@ -256,5 +254,4 @@ if __name__ == "__main__":
     # # Use the DebugToolbar
     # # DebugToolbarExtension(app)
 
-    # app.run(port=5000, host='0.0.0.0')
-    run_app()
+    app.run(port=5000, host='0.0.0.0')
