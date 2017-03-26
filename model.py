@@ -210,11 +210,11 @@ class User(db.Model, UserMixin):
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 
     #User information
-    username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(64), nullable=False, server_default='')
+    username = db.Column(db.Text, nullable=False, unique=True)
+    password = db.Column(db.Text, nullable=False, server_default='')
 
     #user email information
-    email = db.Column(db.String(64), nullable=True)
+    email = db.Column(db.Text, nullable=True)
     confirmed_at = db.Column(db.DateTime())
 
     #user_information

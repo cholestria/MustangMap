@@ -3,14 +3,17 @@ import os
 import json
 import bcrypt
 import uuid
+# from SQLAlchemy import SQLAlchemy
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, url_for, request, send_from_directory
+from flask import Flask, url_for, request, send_from_directory, abort
 from flask import render_template, redirect, flash, session
 from flask_restful import reqparse, abort, Api, Resource
 from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.utils import secure_filename
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
 from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -39,7 +42,7 @@ class ConfigClass(object):
     USER_APP_NAME        = "AppName"                # Used by email templates
 
 
-def setup_api():
+def setup_api(app):
     api = Api(app)
 
     api.add_resource(TotalDataAPI, '/totaldata')
@@ -126,6 +129,7 @@ def create_app():
     def create_user():
         """Process registration form"""
 
+        abort(401)
         name = request.form.get("name")
         email = request.form.get("email")
         password = request.form.get("password")
@@ -226,7 +230,6 @@ def create_app():
                                herds=herds,
                                states=states_list)
 
-
     @app.route('/about')
     def about():
         """About Page """
@@ -236,15 +239,22 @@ def create_app():
     return app
 
 
+def run_app():
+    app = create_app()
+    connect_to_db(app)
+    setup_api(app)
+    app.run()
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
-    app.jinja_env.auto_reload = app.debug  # make sure templates, etc. are not cached in debug mode
+    # app.debug = True
+    # app.jinja_env.auto_reload = app.debug  # make sure templates, etc. are not cached in debug mode
 
-    connect_to_db(app)
+    # connect_to_db(app)
 
-    # Use the DebugToolbar
-    # DebugToolbarExtension(app)
+    # # Use the DebugToolbar
+    # # DebugToolbarExtension(app)
 
-    app.run(port=5000, host='0.0.0.0')
+    # app.run(port=5000, host='0.0.0.0')
+    run_app()
