@@ -100,6 +100,7 @@ def create_app():
                                states_dict=states_dict)
 
 
+
     @app.route('/login', methods=["GET"])
     def login():
         """Login Page"""

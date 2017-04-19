@@ -189,6 +189,10 @@ function loadHerdCharts(herd_id) {
 //loads that state and herd's info
 function mapLoader() {
   initMap();
+  if (typeof URLSearchParams === 'undefined') {
+    loadNationalFeatures();
+    return;
+  }
   var urlParams = new URLSearchParams(window.location.search);
   var state_id_from_url = urlParams.get('state');
   var herd_id_from_url = urlParams.get('herd');
